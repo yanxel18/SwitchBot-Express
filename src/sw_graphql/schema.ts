@@ -5,7 +5,7 @@ const typeDefs = gql`
         Machine (id: Int!): Machine
         MachineFilter (filter:MachineF ): [Machine]!
         WorkerToken: String
-        MachineQR(machineQRScan: String!): Boolean
+        isMachineQR(machineQRScan: String!): Boolean
     }
  
    

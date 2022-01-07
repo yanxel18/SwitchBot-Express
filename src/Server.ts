@@ -51,7 +51,7 @@ router.get('*', (req: Request, res: Response) => {
 });*/
 async function startServer() { 
     await server.start();
-    server.applyMiddleware({app: app});
+    server.applyMiddleware({app: app, path: '/graphql'});
 }
 startServer();
 

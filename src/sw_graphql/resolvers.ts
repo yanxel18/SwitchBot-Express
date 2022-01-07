@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
  
-/* eslint-disable max-len */
+
 /* eslint-disable no-console */
 import * as Models from '../sw_interface/interface';
 
@@ -30,7 +30,8 @@ interface UserDB{
 const resolvers = {
     Query: {
         MachineList: async function MachineList
-        (parent: any, args: MachineArg, {SwitchbotDB} :{SwitchbotDB: SwitchbotDB}): Promise<Models.MachineList[]> {
+        (parent: any, args: MachineArg, {SwitchbotDB} :{SwitchbotDB: SwitchbotDB}): 
+        Promise<Models.MachineList[]> {
             try {
                return  await SwitchbotDB.getMachineListQ();
             }catch (err: any){
@@ -38,7 +39,8 @@ const resolvers = {
             }
             
         },
-        Machine: async function Machine(parent: any, args: MachineArg, {SwitchbotDB} :{SwitchbotDB: SwitchbotDB}): 
+        Machine: async function Machine(parent: any, args: MachineArg, {SwitchbotDB} :
+            {SwitchbotDB: SwitchbotDB}): 
             Promise<Models.MachineList | undefined> {
             const { id } = args; 
             return (( await SwitchbotDB.getMachineListQ()).find(x=> x.machineID === id))
@@ -53,16 +55,19 @@ const resolvers = {
                     } 
                     return source;
             },
-        WorkerToken: async function generateToken(parent: MachineArg, args: any, {UserDB} : {UserDB: UserDB}) : Promise<string> {
+        WorkerToken: async function generateToken(parent: MachineArg, args: any, {UserDB} : 
+            {UserDB: UserDB}) : Promise<string> {
                 return await UserDB.generateToken();
         },
-        MachineQR: async function MachineQR(parent: any,  args: MachineQR , {SwitchbotDB} :{SwitchbotDB: SwitchbotDB}): Promise<boolean>{
+        isMachineQR: async function MachineQR(parent: any,  args: MachineQR , {SwitchbotDB} :
+            {SwitchbotDB: SwitchbotDB}): Promise<boolean>{
             const { machineQRScan } = args;
             return  (await SwitchbotDB.getMachineQR(machineQRScan)).length > 0;
         }
     },
     Machine : {
-        RaspiList:  async function RaspiList(parent: MachineArg, args: any, {SwitchbotDB} :{SwitchbotDB: SwitchbotDB}) 
+        RaspiList:  async function RaspiList(parent: MachineArg, args: any, {SwitchbotDB} :
+            {SwitchbotDB: SwitchbotDB}) 
         : Promise<Models.Raspi[]>{
             const { raspiID} = parent;
             return ((await SwitchbotDB.getRaspiQ())).filter(x => x.raspiID === raspiID );
