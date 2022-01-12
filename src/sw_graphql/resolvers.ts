@@ -1,36 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
- 
-
+/* eslint-disable @typescript-eslint/no-unsafe-argument */ 
 /* eslint-disable no-console */
-import * as Models from '../sw_interface/interface';
+import * as Models from '../sw_interface/interface'; 
 
-interface MachineArg {
-    id: number
-    raspiID: number
-    raspiName: string
-    raspiServer: string
-}
-interface MachineFilter{
-    filter: {
-        machineID: number
-    }
-}
-
-interface MachineQR{
-    machineQRScan: string
-}
 interface SwitchbotDB {
     getMachineListQ:  () =>  Promise<Models.MachineList[]>,
     getRaspiQ: () => Promise<Models.Raspi[]>,
-    getMachineQR: (qr: string) => Promise<Models.machineQR[]>
+    getQRInfoQ: (qr: Models.machineQR) => Promise<string>
 }
 interface UserDB{
-    generateToken: () => Promise<string>
+    generateToken: (machineQR: string, userQR: string) => Promise<string>
 }
 const resolvers = {
     Query: {
         MachineList: async function MachineList
-        (parent: any, args: MachineArg, {SwitchbotDB} :{SwitchbotDB: SwitchbotDB}): 
+        (parent: any, args: Models.MachineArg, {SwitchbotDB} :{SwitchbotDB: SwitchbotDB}): 
         Promise<Models.MachineList[]> {
             try {
                return  await SwitchbotDB.getMachineListQ();
@@ -39,13 +22,13 @@ const resolvers = {
             }
             
         },
-        Machine: async function Machine(parent: any, args: MachineArg, {SwitchbotDB} :
+        Machine: async function Machine(parent: any, args: Models.MachineArg, {SwitchbotDB} :
             {SwitchbotDB: SwitchbotDB}): 
             Promise<Models.MachineList | undefined> {
             const { id } = args; 
             return (( await SwitchbotDB.getMachineListQ()).find(x=> x.machineID === id))
         },
-        MachineFilter: async function Machines(parent: any, args: MachineFilter,
+        MachineFilter: async function Machines(parent: any, args: Models.MachineFilter,
             {SwitchbotDB} :{SwitchbotDB: SwitchbotDB}):
             Promise<Models.MachineList[]>{
                 const { machineID} = args.filter;
@@ -54,19 +37,14 @@ const resolvers = {
                         return source.filter(x=> x.machineID === machineID)
                     } 
                     return source;
-            },
-        WorkerToken: async function generateToken(parent: MachineArg, args: any, {UserDB} : 
-            {UserDB: UserDB}) : Promise<string> {
-                return await UserDB.generateToken();
-        },
-        isMachineQR: async function MachineQR(parent: any,  args: MachineQR , {SwitchbotDB} :
-            {SwitchbotDB: SwitchbotDB}): Promise<boolean>{
-            const { machineQRScan } = args;
-            return  (await SwitchbotDB.getMachineQR(machineQRScan)).length > 0;
+            }, 
+        WorkerToken: async function generateToken(parent: any, args: Models.machineQR, 
+            {SwitchbotDB} : {SwitchbotDB: SwitchbotDB}) : Promise<string>{    
+            return  await SwitchbotDB.getQRInfoQ(args)
         }
     },
     Machine : {
-        RaspiList:  async function RaspiList(parent: MachineArg, args: any, {SwitchbotDB} :
+        RaspiList:  async function RaspiList(parent: Models.MachineArg, args: any, {SwitchbotDB} :
             {SwitchbotDB: SwitchbotDB}) 
         : Promise<Models.Raspi[]>{
             const { raspiID} = parent;

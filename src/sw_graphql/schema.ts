@@ -3,9 +3,9 @@ const typeDefs = gql`
     type Query{
         MachineList: [Machine]! 
         Machine (id: Int!): Machine
-        MachineFilter (filter:MachineF ): [Machine]!
-        WorkerToken: String
-        isMachineQR(machineQRScan: String!): Boolean
+        MachineFilter (filter:MachineF ): [Machine]! 
+        WorkerToken(machineQRScan: String!, 
+            userQRScan: String!): String
     }
  
    

@@ -20,7 +20,8 @@ export interface Options {
     }
 }
 export interface machineQR{
-    machineQR: string
+    machineQRScan: string,
+    userQRScan: string
 }
 export interface MachineList extends MachineType,Switchbot,Raspi {}
  
@@ -44,4 +45,21 @@ export interface Raspi {
 
 export interface Token {
     Token: string
+}
+
+export interface MachineArg {
+    id: number
+    raspiID: number
+    raspiName: string
+    raspiServer: string
+}
+export interface MachineFilter{
+    filter: {
+        machineID: number
+    }
+}
+
+export interface QRCode{
+    machineQRScan: string
+    userQRScan: string
 }
