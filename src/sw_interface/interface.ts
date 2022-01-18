@@ -24,7 +24,10 @@ export interface machineQR{
     userQRScan: string
 }
 export interface MachineList extends MachineType,Switchbot,Raspi {}
- 
+
+export interface MachineUserInfo extends MachineList{
+    UInfo: WorkerInfo[]
+}
 export interface MachineType {
     machineID: number,
     machineName: string,
@@ -43,14 +46,19 @@ export interface Raspi {
     raspiServer: string
 }
 
-export interface Token {
-    Token: string
+export interface WorkerToken  {
+    Noket: string | null,
+    error: [ErrorMsg] | []
+}
+
+export interface ErrorMsg { 
+    message: string | [] 
 }
 
 export interface MachineArg {
-    id: number
-    raspiID: number
-    raspiName: string
+    id: number,
+    raspiID: number,
+    raspiName: string,
     raspiServer: string
 }
 export interface MachineFilter{
@@ -60,6 +68,24 @@ export interface MachineFilter{
 }
 
 export interface QRCode{
-    machineQRScan: string
-    userQRScan: string
+    machineQRScan: string,
+    userQRScan: string 
 }
+
+export interface WorkerInfo{
+    ID: number,
+    FullName: string,
+    AccLvl: number,
+    UserQR: string,
+    GIDFUll: string
+}
+
+export interface WorkerNoketInfo{
+    id: number,
+    mID: number,
+    rID: number,
+    acID: number
+}
+export interface QRInfo {
+    QRInfo : string
+} 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -6,21 +7,33 @@ import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
 import logger from '@shared/Logger';
 import switchbotRouter from './sw_routes/switchbot_routes';
-import * as SwitchbotDB from './sw_route_modules/switchbot_api'; 
-import * as UserDB from './sw_route_modules/user_api'
+//import * as SwitchbotDB from './sw_route_modules/switchbot_api'; 
+import SwitchbotApi from './sw_route_modules/switchbot_api'; 
 import typeDefs from './sw_graphql/schema';
 import resolvers from './sw_graphql/resolvers';
 import { ApolloServer } from 'apollo-server-express';
-const app = express(); 
+import TokenizerRedis from './sw_util/tokenizer';
+import RedisClient from './sw_util/redis';
+import Context from './sw_graphql/context';
+
+
+const redisclient = new RedisClient();
+//redisclient.executeRedis();
+const tokernizerredis = new TokenizerRedis(redisclient.client);
+const app = express();
 const router = express.Router();
+const SwitchbotAPI = new SwitchbotApi();
 const { BAD_REQUEST } = StatusCodes;
 
-const server = new ApolloServer({ 
-    typeDefs, 
+const server = new ApolloServer({
+    typeDefs,
     resolvers,
-    context: {
-        SwitchbotDB,
-        UserDB 
+    context: ({ req }: { req: Request }): Context => {
+        const Tokenizer = tokernizerredis.Tokenizer(req.header("Authorization")?.toString());
+        return {
+            SwitchbotAPI, 
+            Tokenizer
+        }
     }
 });
 app.use(express.json());
@@ -49,9 +62,9 @@ app.use((err: Error, req: Request, res: Response) => {
 router.get('*', (req: Request, res: Response) => {
     res.status(StatusCodes.NOT_FOUND).json(JSON.parse(`{"result":"Page not found! 404"}`));
 });*/
-async function startServer() { 
+async function startServer() {
     await server.start();
-    server.applyMiddleware({app: app, path: '/graphql'});
+    server.applyMiddleware({ app: app, path: '/graphql' });
 }
 startServer();
 

@@ -7,7 +7,7 @@ interface IDBConnection {
 }
 
 class DBConnection implements IDBConnection {
-    private DBConfig: IDBConfig = {
+    protected DBConfig: IDBConfig = {
         user: process.env.MSSQL_USER || "",
         password: process.env.MSSQL_PASSWORD || "",
         server: process.env.MSSQL_SERVER || "",
@@ -24,7 +24,7 @@ class DBConnection implements IDBConnection {
             trustServerCertificate: false
         }
     }
-    private pool = new sql.ConnectionPool(this.DBConfig);
+    protected pool = new sql.ConnectionPool(this.DBConfig);
 
     public async openConnect(): Promise<ConnectionPool> {
         return await this.pool.connect();

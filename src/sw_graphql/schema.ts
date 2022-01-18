@@ -5,10 +5,19 @@ const typeDefs = gql`
         Machine (id: Int!): Machine
         MachineFilter (filter:MachineF ): [Machine]! 
         WorkerToken(machineQRScan: String!, 
-            userQRScan: String!): String
+            userQRScan: String!): WorkerToken,
+        WorkerInfo: WorkerInfo
     }
  
    
+    type WorkerToken {
+        Noket: String
+        error: [ErrorMsg]
+    }
+
+    type ErrorMsg {
+        message: String
+    }
     type Machine {
         machineID: Int!
         machineName: String!
@@ -26,6 +35,13 @@ const typeDefs = gql`
         raspiID: Int!
         raspiName: String!
         raspiServer: String!
+    }
+    type WorkerInfo {
+        ID: Int!,
+        FullName: String!,
+        AccLvl: Int!,
+        UserQR: String!,
+        GIDFUll: String!
     } 
     input MachineF{
         machineID: Int
