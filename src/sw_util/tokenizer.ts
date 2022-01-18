@@ -28,7 +28,6 @@ class TokenizerRedis implements ITokenizerRedis{
                 //const c = await getRedisAsync(token);
                //console.log(jwt.verify(token?.split(' ')[1], accessTokenSecret,))
                 //console.log(await this.redClient.get('3333'));
-              //  console.log('123');
               return token;
                 //return jwt.verify(token?.split(' ')[1], accessTokenSecret);
             }
