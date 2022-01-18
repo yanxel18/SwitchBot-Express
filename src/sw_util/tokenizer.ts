@@ -22,8 +22,7 @@ class TokenizerRedis implements ITokenizerRedis{
 
     public Tokenizer(token: string | undefined): 
         string | JwtPayload | null | undefined {
-        try {
-           // console.log(token);
+        try { 
             if (token) {
                 // this.redClient.set('3333', 'token');
                 //const c = await getRedisAsync(token);

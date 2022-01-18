@@ -67,8 +67,8 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
         const con = await super.openConnect();
         return await con.request()
             .input('UserID', sql.SmallInt, uid)
-            .execute('sp_qrworker_info').then(
-                result => { return result.recordset; }
+            .execute('sp_qrworker_info').then( 
+                result => { return result.recordset; } 
             );
     }
 
