@@ -14,10 +14,14 @@ interface ISwitchBotAction {
     getQRInfo: (qr: Models.machineQR) => Promise<Models.MachineUserInfo | null>,
     generateToken: (qr: Models.machineQR) => Promise<string>,
     getMachineInfo: (qr: Models.machineQR) => Promise<Models.MachineList[]>,
-    getWorkerInfo: (uid: number) => Promise<Models.WorkerInfo[]>
+    getWorkerInfo: (uid: number) => Promise<Models.WorkerInfo[]>,
+    getEventMSG: () => Promise<Models.EMessages[] | []>
 }
 
 class SwitchBotAction extends DBConnection implements ISwitchBotAction {
+    constructor(){
+        super();
+    }
     //for deletion this getMachineList
     //delete also the schema fro graphql
     public async getMachineList(): Promise<Models.MachineList[]> {
@@ -70,6 +74,15 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
             .execute('sp_qrworker_info').then( 
                 result => { return result.recordset; } 
             );
+    }
+
+    public async getEventMSG():Promise<Models.EMessages[] | []>{
+        const con = await super.openConnect();
+        const query = "select eventMSGID,eventMSG from view_event_msg";
+        const r: Models.EMessages[] = await con.request().query(query).then(
+            result => { return result.recordset; }
+        );
+        return r ? r : []; 
     }
 
 }

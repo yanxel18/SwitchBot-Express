@@ -48,7 +48,7 @@ export interface Raspi {
 
 export interface WorkerToken  {
     Noket: string | null,
-    error: [ErrorMsg] | []
+    error: ErrorMsg[] | []
 }
 
 export interface ErrorMsg { 
@@ -89,3 +89,13 @@ export interface WorkerNoketInfo{
 export interface QRInfo {
     QRInfo : string
 } 
+
+export interface MessageInfo {
+    messages: EMessages[] | [],
+    error: ErrorMsg[] | []
+}
+export interface EMessages {
+    eventMSGID: number,
+    eventMSG: string
+} 
+ 

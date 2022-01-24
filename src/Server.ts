@@ -11,28 +11,24 @@ import switchbotRouter from './sw_routes/switchbot_routes';
 import SwitchbotApi from './sw_route_modules/switchbot_api'; 
 import typeDefs from './sw_graphql/schema';
 import resolvers from './sw_graphql/resolvers';
-import { ApolloServer } from 'apollo-server-express';
-import TokenizerRedis from './sw_util/tokenizer';
+import { ApolloServer } from 'apollo-server-express'; 
 import RedisClient from './sw_util/redis';
-import Context from './sw_graphql/context';
-
-
+import Context from './sw_graphql/context'; 
 const redisclient = new RedisClient();
-//redisclient.executeRedis();
-const tokernizerredis = new TokenizerRedis(redisclient.client);
+//redisclient.executeRedis(); 
 const app = express();
 const router = express.Router();
-const SwitchbotAPI = new SwitchbotApi();
+const SwitchbotAPI = new SwitchbotApi(redisclient.client);
 const { BAD_REQUEST } = StatusCodes;
 
 const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: ({ req }: { req: Request }): Context => {
-        const Tokenizer = tokernizerredis.Tokenizer(req.header("Authorization")?.toString());
+        const Token: string | undefined = req.header("Authorization")?.split(' ')[1]; 
         return {
-            SwitchbotAPI, 
-            Tokenizer
+            SwitchbotAPI,
+            Token
         }
     }
 });

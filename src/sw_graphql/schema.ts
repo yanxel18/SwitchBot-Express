@@ -3,18 +3,17 @@ const typeDefs = gql`
     type Query{
         MachineList: [Machine]! 
         Machine (id: Int!): Machine
+        EventMsg: MessageInfo
         MachineFilter (filter:MachineF ): [Machine]! 
         WorkerToken(machineQRScan: String!, 
-            userQRScan: String!): WorkerToken,
-        WorkerInfo: WorkerInfo
+            userQRScan: String!): WorkerToken 
     }
  
    
     type WorkerToken {
         Noket: String
         error: [ErrorMsg]
-    }
-
+    } 
     type ErrorMsg {
         message: String
     }
@@ -42,6 +41,15 @@ const typeDefs = gql`
         AccLvl: Int!,
         UserQR: String!,
         GIDFUll: String!
+    }
+
+    type MessageInfo {
+        messages: [EMessages],
+        error: [ErrorMsg]
+    }
+    type EMessages {
+        eventMSGID: Int
+        eventMSG: String
     } 
     input MachineF{
         machineID: Int

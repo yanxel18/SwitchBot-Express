@@ -1,11 +1,8 @@
-import { JwtPayload } from 'jsonwebtoken';
-import * as Models from '../sw_interface/interface'; 
-import SwitchbotApi from '../sw_route_modules/switchbot_api';
-import RedisClient from '../sw_util/redis';
+import SwitchbotApi from '../sw_route_modules/switchbot_api'; 
 
 interface Context {
-    SwitchbotAPI: SwitchbotApi,
-    Tokenizer: string | JwtPayload | null | undefined
+    SwitchbotAPI: SwitchbotApi, 
+    Token: string | undefined
 }
 
 export default Context
