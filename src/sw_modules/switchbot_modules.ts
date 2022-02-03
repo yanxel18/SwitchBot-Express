@@ -29,7 +29,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
         const query = "select * from view_machine_select";
         return await con.request().query(query).then(
             result => { return result.recordset; }
-        )
+        ) || null;
     }
 
     public async getRaspi(): Promise<Models.Raspi[]> {
@@ -37,7 +37,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
         const query = "select * from view_raspi";
         return await con.request().query(query).then(
             result => { return result.recordset; }
-        )
+        ) || null;
     }
 
     public async getQRInfo(qr: Models.machineQR): Promise<Models.MachineUserInfo | null> {
@@ -65,7 +65,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
             .input('MachineQR', sql.NVarChar(100), qr.machineQRScan)
             .execute('sp_qrmachine_info').then(
                 result => { return result.recordset; }
-            );
+            ) || null;
     }
     public async getWorkerInfo(uid: number): Promise<Models.WorkerInfo[]> {
         const con = await super.openConnect();
@@ -73,7 +73,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
             .input('UserID', sql.SmallInt, uid)
             .execute('sp_qrworker_info').then( 
                 result => { return result.recordset; } 
-            );
+            ) || null;
     }
 
     public async getEventMSG():Promise<Models.EMessages[] | []>{
@@ -83,6 +83,20 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
             result => { return result.recordset; }
         );
         return r ? r : []; 
+    }
+
+    public async createEventLogs(c: Models.EventParam): Promise<IRecordSet<any>>{
+        const con = await super.openConnect();
+        return await con.request()
+                .input('mid', sql.SmallInt, c.mID)
+                .input('msgid', sql.SmallInt, c.msgID)
+                .input('sbid',sql.SmallInt, c.sbid)
+                .input('userid', sql.SmallInt,c.userid)
+                .execute('sp_create_eventlog').then(
+                    result => {
+                        return result.recordset
+                    }
+                ) || null;
     }
 
 }

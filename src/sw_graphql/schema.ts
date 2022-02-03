@@ -5,18 +5,18 @@ const typeDefs = gql`
         Machine (id: Int!): Machine
         EventMsg: MessageInfo
         MachineFilter (filter:MachineF ): [Machine]! 
+        
+    }
+ 
+    type Mutation {
+        createEventLogs(input: EventParam!): String 
         WorkerToken(machineQRScan: String!, 
             userQRScan: String!): WorkerToken 
     }
- 
-   
     type WorkerToken {
         Noket: String
-        error: [ErrorMsg]
-    } 
-    type ErrorMsg {
-        message: String
-    }
+        ScanInfo: ScanInfo 
+    }  
     type Machine {
         machineID: Int!
         machineName: String!
@@ -30,6 +30,19 @@ const typeDefs = gql`
         RaspiList: [RaspiList]
     } 
 
+    type ScanInfo {
+        machineID: Int!
+        machineName: String!
+        machineModel: String!
+        switchbotID: Int!
+        switchbotName: String!
+        switchbotMac: String!
+        raspiID: Int!
+        raspiName: String!
+        raspiServer: String! 
+        UInfo: [WorkerInfo]
+    } 
+
     type RaspiList {
         raspiID: Int!
         raspiName: String!
@@ -40,19 +53,22 @@ const typeDefs = gql`
         FullName: String!,
         AccLvl: Int!,
         UserQR: String!,
-        GIDFUll: String!
+        GIDFull: String!
     }
 
     type MessageInfo {
-        messages: [EMessages],
-        error: [ErrorMsg]
+        messages: [EMessages]
     }
     type EMessages {
         eventMSGID: Int
         eventMSG: String
     } 
+    
     input MachineF{
         machineID: Int
+    }
+    input EventParam {
+        msgID: Int!
     }
 `;
 

@@ -47,8 +47,8 @@ export interface Raspi {
 }
 
 export interface WorkerToken  {
-    Noket: string | null,
-    error: ErrorMsg[] | []
+    ScanInfo: MachineUserInfo| null,
+    Noket: string | null, 
 }
 
 export interface ErrorMsg { 
@@ -77,13 +77,14 @@ export interface WorkerInfo{
     FullName: string,
     AccLvl: number,
     UserQR: string,
-    GIDFUll: string
+    GIDFull: string
 }
 
 export interface WorkerNoketInfo{
-    id: number,
+    uid: number,
     mID: number,
     rID: number,
+    sID: number,
     acID: number
 }
 export interface QRInfo {
@@ -99,3 +100,13 @@ export interface EMessages {
     eventMSG: string
 } 
  
+export interface EventParam {  
+        msgID: number,
+        mID?: number,
+        sbid?: number,
+        userid?: number 
+}
+
+export interface ArgsInput {
+    input: EventParam
+}

@@ -30,6 +30,9 @@ const server = new ApolloServer({
             SwitchbotAPI,
             Token
         }
+    },
+    formatError: (err)=> { 
+        return  new Error (err.message)
     }
 });
 app.use(express.json());
