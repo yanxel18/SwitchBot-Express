@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server-express';
 const typeDefs = gql`
     type Query{
+        Switchbot: [SwitchBot]
         MachineList: [Machine]! 
         Machine (id: Int!): Machine
         EventMsg: MessageInfo
@@ -11,7 +12,8 @@ const typeDefs = gql`
     type Mutation {
         createEventLogs(input: EventParam!): String 
         WorkerToken(machineQRScan: String!, 
-            userQRScan: String!): WorkerToken 
+            userQRScan: String!): WorkerToken,
+        createSwitchBot(input: SwitchbotParam!): String     
     }
     type WorkerToken {
         Noket: String
@@ -30,6 +32,11 @@ const typeDefs = gql`
         RaspiList: [RaspiList]
     } 
 
+    type SwitchBot {
+        switchbotID: Int!
+        switchbotName: String!
+        switchbotMac: String!
+    }
     type ScanInfo {
         machineID: Int!
         machineName: String!
@@ -69,6 +76,11 @@ const typeDefs = gql`
     }
     input EventParam {
         msgID: Int!
+    }
+
+    input SwitchbotParam {
+        switchbotName: String!
+        switchbotMac: String!
     }
 `;
 

@@ -35,9 +35,9 @@ export interface MachineType {
 }
 
 export interface Switchbot {
-    switchbotID: number,
-    switchbotName: string,
-    switchbotMac: string
+    switchbotID?: number,
+    switchbotName?: string,
+    switchbotMac?: string
 }
 
 export interface Raspi {
@@ -109,4 +109,12 @@ export interface EventParam {
 
 export interface ArgsInput {
     input: EventParam
+}
+
+export interface SwitchbotArgs {
+    input: Switchbot
+}
+ 
+export interface dupcheck {
+    check: number
 }

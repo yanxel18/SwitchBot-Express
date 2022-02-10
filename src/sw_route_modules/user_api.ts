@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
-import bcrypt from 'bcrypt';
-import * as Models from '../sw_interface/interface';
-import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt'; 
  
 export async function generateToken(machineQR: string, userQR: string): Promise<string> {
     const saltPass = 10; 

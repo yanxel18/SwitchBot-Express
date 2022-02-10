@@ -9,6 +9,7 @@ import logger from '@shared/Logger';
 import switchbotRouter from './sw_routes/switchbot_routes';
 //import * as SwitchbotDB from './sw_route_modules/switchbot_api'; 
 import SwitchbotApi from './sw_route_modules/switchbot_api'; 
+import ControlPanelApi from './sw_route_modules/controlpanel_api';
 import typeDefs from './sw_graphql/schema';
 import resolvers from './sw_graphql/resolvers';
 import { ApolloServer } from 'apollo-server-express'; 
@@ -19,6 +20,7 @@ const redisclient = new RedisClient();
 const app = express();
 const router = express.Router();
 const SwitchbotAPI = new SwitchbotApi(redisclient.client);
+const ControlPanelAPI = new ControlPanelApi()
 const { BAD_REQUEST } = StatusCodes;
 
 const server = new ApolloServer({
@@ -27,6 +29,7 @@ const server = new ApolloServer({
     context: ({ req }: { req: Request }): Context => {
         const Token: string | undefined = req.header("Authorization")?.split(' ')[1]; 
         return {
+            ControlPanelAPI,
             SwitchbotAPI,
             Token
         }

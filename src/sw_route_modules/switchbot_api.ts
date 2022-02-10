@@ -147,6 +147,7 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
           const t = await this.redClient.get(mID);
           return t;
      }
+
 }
 
 export default SwitchbotApi

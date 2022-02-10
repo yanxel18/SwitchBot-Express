@@ -6,8 +6,6 @@ import sql, { IProcedureResult, IRecordSet, IResult } from 'mssql';
 import bcrypt from 'bcrypt';
 import { QRInfo } from "../sw_interface/interface";
 
-
-
 interface ISwitchBotAction {
     getMachineList: () => Promise<Models.MachineList[]>,//for deletion
     getRaspi: () => Promise<Models.Raspi[]>,
@@ -19,7 +17,7 @@ interface ISwitchBotAction {
 }
 
 class SwitchBotAction extends DBConnection implements ISwitchBotAction {
-    constructor(){
+    constructor() {
         super();
     }
     //for deletion this getMachineList
@@ -49,7 +47,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
         if (p) {
             const e: Models.MachineUserInfo[] = JSON.parse(p[0].QRInfo);
             return e[0];
-        } else return null; 
+        } else return null;
     }
 
     public async generateToken(qr: Models.machineQR): Promise<string> {
@@ -71,34 +69,33 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
         const con = await super.openConnect();
         return await con.request()
             .input('UserID', sql.SmallInt, uid)
-            .execute('sp_qrworker_info').then( 
-                result => { return result.recordset; } 
+            .execute('sp_qrworker_info').then(
+                result => { return result.recordset; }
             ) || null;
     }
 
-    public async getEventMSG():Promise<Models.EMessages[] | []>{
+    public async getEventMSG(): Promise<Models.EMessages[] | []> {
         const con = await super.openConnect();
         const query = "select eventMSGID,eventMSG from view_event_msg";
         const r: Models.EMessages[] = await con.request().query(query).then(
             result => { return result.recordset; }
         );
-        return r ? r : []; 
+        return r ? r : [];
     }
 
-    public async createEventLogs(c: Models.EventParam): Promise<IRecordSet<any>>{
+    public async createEventLogs(c: Models.EventParam): Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
-                .input('mid', sql.SmallInt, c.mID)
-                .input('msgid', sql.SmallInt, c.msgID)
-                .input('sbid',sql.SmallInt, c.sbid)
-                .input('userid', sql.SmallInt,c.userid)
-                .execute('sp_create_eventlog').then(
-                    result => {
-                        return result.recordset
-                    }
-                ) || null;
+            .input('mid', sql.SmallInt, c.mID)
+            .input('msgid', sql.SmallInt, c.msgID)
+            .input('sbid', sql.SmallInt, c.sbid)
+            .input('userid', sql.SmallInt, c.userid)
+            .execute('sp_create_eventlog').then(
+                result => {
+                    return result.recordset
+                }
+            ) || null;
     }
-
 }
 
 export default SwitchBotAction

@@ -34,24 +34,37 @@ const resolvers = {
              return source;*/
             return []
         },
-
+        Switchbot: async (_: any, __: any, { SwitchbotAPI,ControlPanelAPI, Token }: Context):
+            Promise<Models.Switchbot[] | null> => { 
+                const t = SwitchbotAPI.TokenDecode(Token);
+                console.log(t)
+                return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+                ControlPanelAPI.getSwitchbotListQ() : null;
+        },
         EventMsg: async (_: any, __: any, { SwitchbotAPI, Token }: Context):
-            Promise<Models.MessageInfo | null> => { 
+            Promise<Models.MessageInfo | null> => {
             return await SwitchbotAPI.TokenValidate(Token) ?
                 await SwitchbotAPI.getEventMSGQ() : null;
         }
     },
     Mutation: {
-        createEventLogs: async (_: any, args: Models.ArgsInput, 
-                            { SwitchbotAPI, Token }: Context) => { 
+        createEventLogs: async (_: any, args: Models.ArgsInput,
+            { SwitchbotAPI, Token }: Context): Promise<string | null> => {
             const t = SwitchbotAPI.TokenDecode(Token);
-            return await SwitchbotAPI.TokenValidate(Token) && t && Token?
+            return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
                 await SwitchbotAPI.createEventLogsQ(args.input, t, Token) : null;
         },
         WorkerToken: async (_: any, args: Models.machineQR, { SwitchbotAPI }: Context)
-            : Promise<string | null | Models.WorkerToken> => { 
-         
+            : Promise<string | null | Models.WorkerToken> => {
+
             return await SwitchbotAPI.getQRInfoQ(args);
+        },
+        createSwitchBot: async (_: any, args: Models.SwitchbotArgs,
+            { ControlPanelAPI, SwitchbotAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+                ControlPanelAPI.createSwitchBotQ(args.input, t) : null;
         }
     },
     Machine: {
