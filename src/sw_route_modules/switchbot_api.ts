@@ -17,8 +17,8 @@ interface ISwitchbotApi {
      getEventMSGQ: () => Promise<Models.MessageInfo>,
      createEventLogsQ: (e: Models.EventParam, t: Models.WorkerNoketInfo,
           Token: string) => Promise<string | null>,
-     TokenValidate: (token: string | undefined) => Promise<string | JwtPayload | null | undefined>,
-     TokenDecode: (token: string | undefined) => Models.WorkerNoketInfo | null | undefined,
+     TokenValidate: (token: string | undefined) => Promise<string | JwtPayload | null>,
+     TokenDecode: (token: string | undefined) => Models.WorkerNoketInfo | null,
      writeRedisClient: (qr: Models.MachineUserInfo, token: string | null) => Promise<void>,
      getRedisMachine: (mID: string) => Promise<string | null>
 }
@@ -63,7 +63,7 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
                     sID: qr.switchbotID,
                     acID: qr.UInfo[0].AccLvl
                }, accessTokenSecret, {
-                    expiresIn: '1h'
+                    expiresIn: '8h'
                });
                if (accessToken) this.writeRedisClient(qr, accessToken);
           }
@@ -110,7 +110,7 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
 
      }
      public async TokenValidate(token: string | undefined):
-          Promise<Models.WorkerNoketInfo | null | undefined> {
+          Promise<Models.WorkerNoketInfo | null > {
           try {
                let tokenData!: Models.WorkerNoketInfo;
                if (token) {
@@ -122,7 +122,7 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
                               return tokenData;
                          } else throw new ValidationError('Error occured! Unauthorized! Code: 401');
 
-                    }
+                    } return null
                } else {
                     throw new ValidationError('Unauthorized! Code: 401');
                }
@@ -130,7 +130,7 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
                throw new ValidationError('Unauthorized! Code: 401');
           }
      }
-     public TokenDecode(token: string | undefined): Models.WorkerNoketInfo | null | undefined {
+     public TokenDecode(token: string | undefined): Models.WorkerNoketInfo | null {
           if (token) {
                const decodeToken: Models.WorkerNoketInfo =
                     JSON.parse(JSON.stringify(jwt.decode(token)));

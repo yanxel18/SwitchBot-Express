@@ -27,7 +27,12 @@ class DBConnection implements IDBConnection {
     protected pool = new sql.ConnectionPool(this.DBConfig);
 
     public async openConnect(): Promise<ConnectionPool> {
-        return await this.pool.connect();
+        try{
+            return await this.pool.connect();
+        }catch(error: any){
+            throw new Error("Cannot connect to database!")
+        }
+        
     }
 }
 

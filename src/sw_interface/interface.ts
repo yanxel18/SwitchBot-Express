@@ -23,7 +23,7 @@ export interface machineQR{
     machineQRScan: string,
     userQRScan: string
 }
-export interface MachineList extends MachineType,Switchbot,Raspi {}
+export interface MachineList extends MachineType,SwitchBot,Raspi {}
 
 export interface MachineUserInfo extends MachineList{
     UInfo: WorkerInfo[]
@@ -34,10 +34,11 @@ export interface MachineType {
     machineModel: string
 }
 
-export interface Switchbot {
+export interface SwitchBot {
     switchbotID?: number,
     switchbotName?: string,
-    switchbotMac?: string
+    switchbotMac?: string,
+    switchbotRaspiID?: number
 }
 
 export interface Raspi {
@@ -107,14 +108,22 @@ export interface EventParam {
         userid?: number 
 }
 
+export interface SwitchbotDeleteParam{
+        uid: number,
+        switchbotID: number
+}
 export interface ArgsInput {
     input: EventParam
 }
 
 export interface SwitchbotArgs {
-    input: Switchbot
+    input: SwitchBot
 }
  
 export interface dupcheck {
     check: number
+}
+
+export interface SwitchbotDeleteArgs{
+    input: SwitchbotDeleteParam
 }

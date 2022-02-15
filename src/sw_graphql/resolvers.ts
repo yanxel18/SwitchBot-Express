@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable no-console */
+ /* eslint-disable no-console */
 import * as Models from '../sw_interface/interface';
-import { Request, Response } from 'express';
-import Context from './context';
-import axios from 'axios';
+import { Request } from 'express';
+import Context from './context'; 
 const resolvers = {
     Query: {
         MachineList: () =>
@@ -34,11 +32,16 @@ const resolvers = {
              return source;*/
             return []
         },
-        Switchbot: async (_: any, __: any, { SwitchbotAPI,ControlPanelAPI, Token }: Context):
-            Promise<Models.Switchbot[] | null> => { 
-                const t = SwitchbotAPI.TokenDecode(Token);
-                console.log(t)
-                return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+        RaspiList: async (_: any, ___: any, { SwitchbotAPI, ControlPanelAPI, Token }:
+            Context): Promise<Models.Raspi[]> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+                SwitchbotAPI.getRaspiQ() : [];
+        },
+        SwitchBot: async (_: any, __: any, { SwitchbotAPI, ControlPanelAPI, Token }: Context):
+            Promise<Models.SwitchBot[] | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
                 ControlPanelAPI.getSwitchbotListQ() : null;
         },
         EventMsg: async (_: any, __: any, { SwitchbotAPI, Token }: Context):
@@ -63,9 +66,22 @@ const resolvers = {
             { ControlPanelAPI, SwitchbotAPI, Token }: Context):
             Promise<string | null> => {
             const t = SwitchbotAPI.TokenDecode(Token);
-            return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
-                ControlPanelAPI.createSwitchBotQ(args.input, t) : null;
-        }
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                const x = (await ControlPanelAPI.getSwitchbotListQ())?.
+                    find(x => x.switchbotMac === args.input.switchbotMac);
+                return x ? "duplicate" : await ControlPanelAPI.createSwitchBotQ(args.input, t);
+            }
+            return null
+        },
+        deleteSwitchBot: async (_: any, args: Models.SwitchbotDeleteArgs,
+            { ControlPanelAPI, SwitchbotAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                return await ControlPanelAPI.deleteSwitchbotQ(args.input, t);
+            }
+            return null
+        },
     },
     Machine: {
         RaspiList: async (parent: Models.MachineArg, w_: any,
@@ -75,6 +91,14 @@ const resolvers = {
             return ((await SwitchbotAPI.getRaspiQ())).filter(x => x.raspiID === raspiID);
         }
 
+    },
+    SwitchBot: {
+        RaspiList: async (parent: Models.SwitchBot, w_: any,
+            { SwitchbotAPI }: Context)
+            : Promise<Models.Raspi[]> => {
+            const { switchbotRaspiID } = parent;
+            return ((await SwitchbotAPI.getRaspiQ())).filter(x => x.raspiID === switchbotRaspiID);
+        }
     }
 }
 
