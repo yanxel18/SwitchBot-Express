@@ -44,6 +44,47 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
                 }
             ) || null;
     }
+    public async updateSwitchbot(p: Models.SwitchBot, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+        const con = await super.openConnect();
+        return await con.request()
+            .input('switchbotID', sql.SmallInt, p.switchbotID) 
+            .input('switchbotName', sql.NVarChar(50), p.switchbotName) 
+            .input('switchbotMac', sql.NVarChar(20), p.switchbotMac)
+            .input('switchbotRaspiID', sql.SmallInt, p.switchbotRaspiID) 
+            .input('userID', sql.SmallInt, t.uid)
+            .execute('sp_update_switchbot').then(
+                result => {
+                    return result.recordset
+                }
+            ) || null;
+    }
+
+    public async updateRaspi(p: Models.Raspi, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+        const con = await super.openConnect();
+        return await con.request()
+            .input('raspiID', sql.SmallInt, p.raspiID) 
+            .input('raspiName', sql.NVarChar(50), p.raspiName) 
+            .input('raspiServer', sql.NVarChar(300), p.raspiServer) 
+            .input('userID', sql.SmallInt, t.uid)
+            .execute('sp_update_raspi').then(
+                result => {
+                    return result.recordset
+                }
+            ) || null;
+    }
+    
+    public async deleteRaspi(p: Models.RaspiDeleteParam, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+        const con = await super.openConnect();
+        return await con.request()
+            .input('raspiID', sql.SmallInt, p.raspiID) 
+            .input('userID', sql.SmallInt, t.uid)
+            .execute('sp_delete_raspi').then(
+                result => {
+                    return result.recordset
+                }
+            ) || null;
+    }
+
 }
 
 export default ControlPanelAction

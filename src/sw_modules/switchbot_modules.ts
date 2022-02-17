@@ -32,7 +32,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
 
     public async getRaspi(): Promise<Models.Raspi[]> {
         const con = await super.openConnect();
-        const query = "select * from view_raspi";
+        const query = "select * from view_raspi_list";
         return await con.request().query(query).then(
             result => { return result.recordset; }
         ) || null;

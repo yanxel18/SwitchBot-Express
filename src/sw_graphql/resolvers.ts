@@ -14,7 +14,7 @@ const resolvers = {
         } catch (err: any) {
             throw new Error(err);
         }*/
-                return []
+                return [];
 
             },
         Machine: async (parent: any, args: Models.MachineArg,
@@ -30,7 +30,7 @@ const resolvers = {
                  return source.filter(x => x.machineID === machineID);
              }
              return source;*/
-            return []
+            return [];
         },
         RaspiList: async (_: any, ___: any, { SwitchbotAPI, ControlPanelAPI, Token }:
             Context): Promise<Models.Raspi[]> => {
@@ -80,8 +80,44 @@ const resolvers = {
             if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
                 return await ControlPanelAPI.deleteSwitchbotQ(args.input, t);
             }
+            return null;
+        },
+        updateSwitchBot: async (_: any, args: Models.SwitchbotArgs,
+            { ControlPanelAPI, SwitchbotAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                const a = ((await ControlPanelAPI.getSwitchbotListQ())?.
+                    filter(b => b.switchbotID !== args.input.switchbotID))?.
+                    filter(c => c.switchbotMac === args.input.switchbotMac); 
+                    if(a) if(a.length > 0) return "duplicate";  
+                    return await ControlPanelAPI.updateSwitchbotQ(args.input, t);
+            }
             return null
         },
+        updateRaspi: async (_: any, args: Models.RaspiArgs,
+            { ControlPanelAPI, SwitchbotAPI, Token }: Context):
+            Promise<string | null> => {
+                console.log(args);
+            const t = SwitchbotAPI.TokenDecode(Token);
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                const a = ((await SwitchbotAPI.getRaspiQ())?.
+                    filter(b => b.raspiID !== args.input.raspiID))?.
+                    filter(c => c.raspiServer === args.input.raspiServer); 
+                    if(a) if(a.length > 0) return "duplicate";  
+                    return await ControlPanelAPI.updateRaspiQ(args.input, t);
+            }
+            return null;
+        },
+        deleteRaspi: async (_: any, args: Models.RaspiDeleteArgs,
+            { ControlPanelAPI, SwitchbotAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                return await ControlPanelAPI.deleteRaspiQ(args.input, t);
+            }
+            return null;
+        }
     },
     Machine: {
         RaspiList: async (parent: Models.MachineArg, w_: any,

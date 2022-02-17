@@ -38,7 +38,8 @@ export interface SwitchBot {
     switchbotID?: number,
     switchbotName?: string,
     switchbotMac?: string,
-    switchbotRaspiID?: number
+    switchbotRaspiID?: number,
+    RaspiList?: Raspi[]
 }
 
 export interface Raspi {
@@ -109,7 +110,6 @@ export interface EventParam {
 }
 
 export interface SwitchbotDeleteParam{
-        uid: number,
         switchbotID: number
 }
 export interface ArgsInput {
@@ -119,11 +119,20 @@ export interface ArgsInput {
 export interface SwitchbotArgs {
     input: SwitchBot
 }
- 
+
+export interface RaspiArgs {
+    input: Raspi
+}
+
+export interface RaspiDeleteParam{
+    raspiID: number
+}
 export interface dupcheck {
     check: number
 }
-
+export interface RaspiDeleteArgs {
+    input : RaspiDeleteParam
+}
 export interface SwitchbotDeleteArgs{
     input: SwitchbotDeleteParam
 }

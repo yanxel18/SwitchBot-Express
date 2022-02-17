@@ -14,7 +14,10 @@ const typeDefs = gql`
         WorkerToken(machineQRScan: String!, 
             userQRScan: String!): WorkerToken
         createSwitchBot(input: SwitchbotParam!): String
-        deleteSwitchBot(input: SwitchbotDeleteParam!): String    
+        deleteSwitchBot(input: SwitchbotDeleteParam!): String   
+        updateSwitchBot(input: SwitchbotUpdateParam!): String
+        updateRaspi(input: RaspiUpdateParam!): String 
+        deleteRaspi(input: RaspiDeleteParam!): String
     }
     type WorkerToken {
         Noket: String
@@ -86,9 +89,24 @@ const typeDefs = gql`
         switchbotMac: String!
     }
 
-    input SwitchbotDeleteParam{
-        uid: Int!,
+    input SwitchbotDeleteParam{ 
         switchbotID: Int!
+    }
+
+    input RaspiDeleteParam {
+        raspiID: Int!
+    }
+
+    input RaspiUpdateParam {
+        raspiID: Int!
+        raspiName: String!
+        raspiServer: String!
+    }
+    input SwitchbotUpdateParam{
+        switchbotID: Int!
+        switchbotName: String!
+        switchbotMac: String!
+        switchbotRaspiID: Int!
     }
 `;
 

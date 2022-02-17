@@ -26,6 +26,7 @@ const { BAD_REQUEST } = StatusCodes;
 const server = new ApolloServer({
     typeDefs,
     resolvers,
+    introspection: process.env.NODE_ENV !== 'production',
     context: ({ req }: { req: Request }): Context => {
         const Token: string | undefined = req.header("Authorization")?.split(' ')[1]; 
         return {
