@@ -63,6 +63,7 @@
     "@types/jsonwebtoken": "^8.5.6",
     "@types/mssql": "^7.1.4",
     "@types/redis": "^4.0.11",
+    "@types/uuid": "^8.3.4",
     "apollo-server-core": "^3.5.0",
     "apollo-server-express": "^3.5.0",
     "axios": "^0.25.0",
@@ -83,7 +84,8 @@
     "morgan": "^1.10.0",
     "mssql": "^7.3.0",
     "redis": "^4.0.2",
-    "rxjs": "^7.4.0"
+    "rxjs": "^7.4.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/command-line-args": "^5.2.0",

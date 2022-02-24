@@ -1,9 +1,23 @@
 /* eslint-disable no-console */
 import ControlPanelAction from '../sw_modules/controlpanel_modules';
 import * as Models from '../sw_interface/interface';
-
+import { v4 as uuidv4 } from 'uuid';
 interface IControlPanelApi {
-    createSwitchBotQ: (e: Models.SwitchBot, t: Models.WorkerNoketInfo) => Promise<string | null>
+    createSwitchBotQ: (e: Models.SwitchBot, t: Models.WorkerNoketInfo) => Promise<string | null>,
+    getSwitchbotListQ: () => Promise<Models.SwitchBot[] | null>,
+    deleteSwitchbotQ: (e: Models.SwitchbotDeleteParam, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    updateSwitchbotQ: (e: Models.SwitchBot, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    updateRaspiQ: (e: Models.Raspi, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    createRaspiQ: (e: Models.Raspi, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    deleteRaspiQ: (e: Models.RaspiDeleteParam, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    createMachineQ: (e: Models.Machine, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    getMachineListQ: () => Promise<Models.Machine[]>            
 }
 
 class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
@@ -60,7 +74,15 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             throw new Error("Cannot update Raspberry PI! "+ error);
         }
     }
-
+    public async createRaspiQ(e: Models.Raspi, t:
+        Models.WorkerNoketInfo): Promise<string | null> {
+        try {
+            await super.createRaspi(e, t);
+            return "success"
+        } catch (error: any) {
+            throw new Error("Cannot create Rasperry Pi! "+ error);
+        }
+    }
     public async deleteRaspiQ(e: Models.RaspiDeleteParam, t:
         Models.WorkerNoketInfo): Promise<string | null> {
         try {
@@ -70,6 +92,35 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             throw new Error("Cannot delete Raspberry PI! "+ error);
         }
     }
+    
+    public async createMachineQ(e: Models.Machine, t:
+        Models.WorkerNoketInfo): Promise<string | null> {
+        try {
+            e.machineQR = uuidv4();
+            await super.createMachine(e, t);
+            return "success"
+        } catch (error: any) {
+            throw new Error("Cannot create Machine! "+ error);
+        }
+    }
+
+    public async getMachineListQ(): Promise<Models.Machine[]> {
+        try{
+            return await super.getMachineList();
+        } catch (error: any) {
+            throw new Error("Cannot load Machine list! "+ error);
+        }
+   }
+
+   public async updateMachineQ(e: Models.Machine, t:
+    Models.WorkerNoketInfo): Promise<string | null> {
+    try {
+        await super.updateMachine(e, t);
+        return "success"
+    } catch (error: any) {
+        throw new Error("Cannot update Machine! "+ error);
+    }
+}
 }
 
 export default ControlPanelApi

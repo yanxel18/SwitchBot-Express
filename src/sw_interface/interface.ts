@@ -29,9 +29,9 @@ export interface MachineUserInfo extends MachineList{
     UInfo: WorkerInfo[]
 }
 export interface MachineType {
-    machineID: number,
-    machineName: string,
-    machineModel: string
+    machineID?: number,
+    machineName?: string,
+    machineModel?: string
 }
 
 export interface SwitchBot {
@@ -43,9 +43,9 @@ export interface SwitchBot {
 }
 
 export interface Raspi {
-    raspiID: number,
-    raspiName: string,
-    raspiServer: string
+    raspiID?: number,
+    raspiName?: string,
+    raspiServer?: string
 }
 
 export interface WorkerToken  {
@@ -108,7 +108,13 @@ export interface EventParam {
         sbid?: number,
         userid?: number 
 }
-
+export interface Machine {
+    machineID?: number,
+    machineName?: string,
+    machineModel?: string,
+    machineSwitchbotID?: number,
+    machineQR?: string
+}
 export interface SwitchbotDeleteParam{
         switchbotID: number
 }
@@ -127,12 +133,30 @@ export interface RaspiArgs {
 export interface RaspiDeleteParam{
     raspiID: number
 }
+
+export interface CreateMachineParam { 
+    machineName?: string,
+    machineModel?: string,
+    machineQR?: string
+}
+
 export interface dupcheck {
     check: number
 }
 export interface RaspiDeleteArgs {
     input : RaspiDeleteParam
 }
+export interface RaspiCreateArgs {
+    input: Raspi
+}
 export interface SwitchbotDeleteArgs{
     input: SwitchbotDeleteParam
+}
+
+export interface CreateMachineArgs {
+    input: CreateMachineParam
+}
+
+export interface UpdateMachineArgs {
+    input: Machine
 }

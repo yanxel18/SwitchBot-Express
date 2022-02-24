@@ -9,7 +9,7 @@ import { ValidationError } from 'apollo-server-express';
 import axios from 'axios';
 
 interface ISwitchbotApi {
-     getMachineListQ: () => Promise<Models.MachineList[]>,
+     getMachineListForTriggerQ: () => Promise<Models.MachineList[]>,
      getRaspiQ: () => Promise<Models.Raspi[]>,
      getQRInfoQ: (qr: Models.machineQR) =>
           Promise<Models.machineQR[] | null | string | Models.WorkerToken>,
@@ -32,8 +32,8 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
           super();
           this.redClient = redisClient;
      }
-     public async getMachineListQ(): Promise<Models.MachineList[]> {
-          return await super.getMachineList();
+     public async getMachineListForTriggerQ(): Promise<Models.MachineList[]> {
+          return await super.getMachineListForTrigger();
      }
 
      public async getRaspiQ(): Promise<Models.Raspi[]> {
@@ -82,14 +82,14 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
           Models.WorkerNoketInfo, Token: string): Promise<string | null> {
           try {
                const m: Models.MachineList | undefined =
-                    (await this.getMachineList()).find(x => x.machineID === t.mID);
-               if (m) {
-                    const p: Models.EventParam = {
-                         ...e,
-                         userid: t.uid,
-                         mID: t.mID,
-                         sbid: t.sID
-                    }
+                    (await this.getMachineListForTrigger()).find(x => x.machineID === t.mID);
+               const p: Models.EventParam = {
+                    ...e,
+                    userid: t.uid,
+                    mID: t.mID,
+                    sbid: t.sID
+               }
+               if (m && m.raspiServer) {
                     const switchbotResponse = await axios.post(m.raspiServer, {
                          mac: m.switchbotMac
                     }, {
@@ -103,14 +103,15 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
                          await super.createEventLogs(p);
                          return switchbotResponse;
                     }
+
                } return null;
           } catch (error: any) {
-               throw new Error("Cannot trigger switchbot! Check RaspiAPI server!");
+               throw new Error("Cannot trigger switchbot! Check RaspiAPI server! " + error);
           }
 
      }
      public async TokenValidate(token: string | undefined):
-          Promise<Models.WorkerNoketInfo | null > {
+          Promise<Models.WorkerNoketInfo | null> {
           try {
                let tokenData!: Models.WorkerNoketInfo;
                if (token) {
@@ -140,7 +141,7 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
      }
      public async writeRedisClient(qr: Models.MachineUserInfo,
           token: string | null): Promise<void> {
-          if (qr && token) await this.redClient.set(qr.machineID.toString(), token);
+          if (qr && token && qr.machineID) await this.redClient.set(qr.machineID.toString(), token);
      }
 
      public async getRedisMachine(mID: string): Promise<string | null> {

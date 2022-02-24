@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import { QRInfo } from "../sw_interface/interface";
 
 interface ISwitchBotAction {
-    getMachineList: () => Promise<Models.MachineList[]>,//for deletion
+    getMachineListForTrigger: () => Promise<Models.MachineList[]>,//for deletion
     getRaspi: () => Promise<Models.Raspi[]>,
     getQRInfo: (qr: Models.machineQR) => Promise<Models.MachineUserInfo | null>,
     generateToken: (qr: Models.machineQR) => Promise<string>,
@@ -22,7 +22,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
     }
     //for deletion this getMachineList
     //delete also the schema fro graphql
-    public async getMachineList(): Promise<Models.MachineList[]> {
+    public async getMachineListForTrigger(): Promise<Models.MachineList[]> {
         const con = await super.openConnect();
         const query = "select * from view_machine_select";
         return await con.request().query(query).then(
@@ -32,7 +32,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
 
     public async getRaspi(): Promise<Models.Raspi[]> {
         const con = await super.openConnect();
-        const query = "select * from view_raspi_list";
+        const query = "select * from view_raspi_list order by raspiID desc";
         return await con.request().query(query).then(
             result => { return result.recordset; }
         ) || null;

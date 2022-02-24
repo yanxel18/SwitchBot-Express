@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 const typeDefs = gql`
     type Query{
         SwitchBot: [SwitchBot]
-        MachineList: [Machine]! 
+        MachineList: [MachineList]
         Machine (id: Int!): Machine
         EventMsg: MessageInfo
         RaspiList: [RaspiList]
@@ -16,8 +16,11 @@ const typeDefs = gql`
         createSwitchBot(input: SwitchbotParam!): String
         deleteSwitchBot(input: SwitchbotDeleteParam!): String   
         updateSwitchBot(input: SwitchbotUpdateParam!): String
-        updateRaspi(input: RaspiUpdateParam!): String 
+        updateRaspi(input: RaspiUpdateParam!): String
+        createRaspi(input: RaspiCreateParam!): String 
         deleteRaspi(input: RaspiDeleteParam!): String
+        createMachine(input: MachineCreateParam!): String
+        updateMachine(input: MachineUpdateParam!): String
     }
     type WorkerToken {
         Noket: String
@@ -35,7 +38,13 @@ const typeDefs = gql`
         raspiServer: String!
         RaspiList: [RaspiList]
     } 
-
+    type MachineList {
+        machineID: Int!
+        machineName: String!
+        machineModel: String!
+        machineSwitchbotID: Int
+        machineQR: String!
+    }
     type SwitchBot {
         switchbotID: Int!
         switchbotName: String!
@@ -96,7 +105,10 @@ const typeDefs = gql`
     input RaspiDeleteParam {
         raspiID: Int!
     }
-
+    input RaspiCreateParam {
+        raspiName: String!
+        raspiServer: String!  
+    }
     input RaspiUpdateParam {
         raspiID: Int!
         raspiName: String!
@@ -106,7 +118,20 @@ const typeDefs = gql`
         switchbotID: Int!
         switchbotName: String!
         switchbotMac: String!
-        switchbotRaspiID: Int!
+        switchbotRaspiID: Int
+    }
+
+    input MachineCreateParam {
+        machineName: String!
+        machineModel: String!
+        machineQR: String!
+    }
+
+    input MachineUpdateParam {
+        machineID: Int!
+        machineName: String!
+        machineModel: String!
+        machineSwitchbotID: Int
     }
 `;
 
