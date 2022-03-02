@@ -115,6 +115,13 @@ export interface Machine {
     machineSwitchbotID?: number,
     machineQR?: string
 }
+
+export interface SwitchbotFilter{
+    filter: {
+        switchbotID?: number,
+        switchbotRaspiIDisNull?: boolean
+    }
+}
 export interface SwitchbotDeleteParam{
         switchbotID: number
 }
@@ -132,6 +139,10 @@ export interface RaspiArgs {
 
 export interface RaspiDeleteParam{
     raspiID: number
+}
+
+export interface MachineDeleteParam {
+    machineID: number
 }
 
 export interface CreateMachineParam { 
@@ -159,4 +170,8 @@ export interface CreateMachineArgs {
 
 export interface UpdateMachineArgs {
     input: Machine
+}
+
+export interface MachineDeleteArgs {
+    input : MachineDeleteParam
 }

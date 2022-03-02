@@ -14,7 +14,8 @@ interface IControlPanelAction {
     deleteRaspi: (p: Models.RaspiDeleteParam, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
     createMachine: (c: Models.Machine, t: Models.WorkerNoketInfo, qr: string) => Promise<Models.dupcheck[] | null>,
     getMachineList: () => Promise<Models.Machine[]>,
-    updateMachine: (p: Models.Machine, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>
+    updateMachine: (p: Models.Machine, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
+    deleteMachine: (p: Models.MachineDeleteParam, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>
 
 }
 class ControlPanelAction extends DBConnection implements IControlPanelAction {
@@ -142,6 +143,26 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
                     return result.recordset
                 }
             ) || null;
+    }
+
+    public async deleteMachine(p: Models.MachineDeleteParam, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+        const con = await super.openConnect();
+        return await con.request()
+            .input('machineID', sql.SmallInt, p.machineID) 
+            .input('userID', sql.SmallInt, t.uid)
+            .execute('sp_delete_machine').then(
+                result => {
+                    return result.recordset
+                }
+            ) || null;
+    }
+
+    public async getWorkerList(): Promise<Models.WorkerInfo[]> {
+        const con = await super.openConnect();
+        const query = "select * from view_user order by ID desc";
+        return await con.request().query(query).then(
+            result => { return result.recordset; }
+        ) || null;
     }
 }
 

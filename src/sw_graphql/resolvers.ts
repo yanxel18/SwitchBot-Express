@@ -31,9 +31,16 @@ const resolvers = {
             return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
                 SwitchbotAPI.getRaspiQ() : [];
         },
-        SwitchBot: async (_: any, __: any, { SwitchbotAPI, ControlPanelAPI, Token }: Context):
-            Promise<Models.SwitchBot[] | null> => {
+        SwitchBot: async (_: any, { filter }: Models.SwitchbotFilter, 
+            { SwitchbotAPI, ControlPanelAPI, Token }: Context):
+            Promise<Models.SwitchBot[] | null | Models.SwitchBot> => {
             const t = SwitchbotAPI.TokenDecode(Token);
+            const sblist = await  ControlPanelAPI.getSwitchbotListQ();
+            console.log(filter);
+            if (filter?.switchbotID) 
+                return sblist?.filter(x => x.switchbotID === filter.switchbotID) || null;
+            if (filter?.switchbotRaspiIDisNull) 
+                return sblist?.filter(x => x.switchbotRaspiID !== null) || null; 
             return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
                 ControlPanelAPI.getSwitchbotListQ() : null;
         },
@@ -41,6 +48,12 @@ const resolvers = {
             Promise<Models.MessageInfo | null> => {
             return await SwitchbotAPI.TokenValidate(Token) ?
                 await SwitchbotAPI.getEventMSGQ() : null;
+        },
+        WorkerList: async (_: any, ___: any, { SwitchbotAPI, ControlPanelAPI, Token }:
+            Context): Promise<Models.WorkerInfo[]> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+                ControlPanelAPI.getWorkerListQ() : [];
         }
     },
     Mutation: {
@@ -60,8 +73,8 @@ const resolvers = {
             Promise<string | null> => {
             const t = SwitchbotAPI.TokenDecode(Token);
             if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
-                const x = (await ControlPanelAPI.getSwitchbotListQ())?.
-                    find(x => x.switchbotMac === args.input.switchbotMac);
+                const x = (await ControlPanelAPI.getSwitchbotListQ())
+                ?.find(x => x.switchbotMac === args.input.switchbotMac);
                 return x ? "duplicate" : await ControlPanelAPI.createSwitchBotQ(args.input, t);
             }
             return null
@@ -150,6 +163,15 @@ const resolvers = {
                 return await ControlPanelAPI.updateMachineQ(args.input, t); 
             }
             return null
+        },
+        deleteMachine: async (_: any, args: Models.MachineDeleteArgs,
+            { ControlPanelAPI, SwitchbotAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                return await ControlPanelAPI.deleteMachineQ(args.input, t);
+            }
+            return null;
         }
     },
     Machine: {

@@ -1,12 +1,13 @@
 import { gql } from 'apollo-server-express';
 const typeDefs = gql`
     type Query{
-        SwitchBot: [SwitchBot]
+        SwitchBot (filter: SwitchbotFilter): [SwitchBot]
         MachineList: [MachineList]
         Machine (id: Int!): Machine
         EventMsg: MessageInfo
         RaspiList: [RaspiList]
         MachineFilter (filter:MachineF ): [Machine]!  
+        WorkerList: [WorkerInfo]
     }
  
     type Mutation {
@@ -21,6 +22,7 @@ const typeDefs = gql`
         deleteRaspi(input: RaspiDeleteParam!): String
         createMachine(input: MachineCreateParam!): String
         updateMachine(input: MachineUpdateParam!): String
+        deleteMachine(input: MachineDeleteParam!): String
     }
     type WorkerToken {
         Noket: String
@@ -85,7 +87,10 @@ const typeDefs = gql`
         eventMSGID: Int
         eventMSG: String
     } 
-    
+    input SwitchbotFilter{
+        switchbotID: Int
+        switchbotRaspiIDisNull: Boolean
+    }
     input MachineF{
         machineID: Int
     }
@@ -124,7 +129,6 @@ const typeDefs = gql`
     input MachineCreateParam {
         machineName: String!
         machineModel: String!
-        machineQR: String!
     }
 
     input MachineUpdateParam {
@@ -132,6 +136,10 @@ const typeDefs = gql`
         machineName: String!
         machineModel: String!
         machineSwitchbotID: Int
+    }
+
+    input MachineDeleteParam{ 
+        machineID: Int!
     }
 `;
 

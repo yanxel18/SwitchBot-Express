@@ -17,7 +17,7 @@ interface IControlPanelApi {
         Models.WorkerNoketInfo) => Promise<string | null>,
     createMachineQ: (e: Models.Machine, t:
         Models.WorkerNoketInfo) => Promise<string | null>,
-    getMachineListQ: () => Promise<Models.Machine[]>            
+    getMachineListQ: () => Promise<Models.Machine[]>
 }
 
 class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
@@ -32,7 +32,7 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             await super.createSwitchbot(e, t);
             return "success"
         } catch (error: any) {
-            throw new Error("Cannot create switchbot! "+ error);
+            throw new Error("Cannot create switchbot! " + error);
         }
     }
 
@@ -41,7 +41,7 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             const b: Models.SwitchBot[] | null = await super.getSwitchbotList();
             return b || null
         } catch (error: any) {
-            throw new Error("Cannot create switchbot! "+ error);
+            throw new Error("Cannot create switchbot! " + error);
         }
     }
 
@@ -51,7 +51,7 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             await super.deleteSwitchBot(e, t);
             return "success"
         } catch (error: any) {
-            throw new Error("Cannot delete switchbot! "+ error);
+            throw new Error("Cannot delete switchbot! " + error);
         }
     }
 
@@ -61,7 +61,7 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             await super.updateSwitchbot(e, t);
             return "success"
         } catch (error: any) {
-            throw new Error("Cannot update switchbot! "+ error);
+            throw new Error("Cannot update switchbot! " + error);
         }
     }
 
@@ -71,7 +71,7 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             await super.updateRaspi(e, t);
             return "success"
         } catch (error: any) {
-            throw new Error("Cannot update Raspberry PI! "+ error);
+            throw new Error("Cannot update Raspberry PI! " + error);
         }
     }
     public async createRaspiQ(e: Models.Raspi, t:
@@ -80,7 +80,7 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             await super.createRaspi(e, t);
             return "success"
         } catch (error: any) {
-            throw new Error("Cannot create Rasperry Pi! "+ error);
+            throw new Error("Cannot create Rasperry Pi! " + error);
         }
     }
     public async deleteRaspiQ(e: Models.RaspiDeleteParam, t:
@@ -89,10 +89,10 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             await super.deleteRaspi(e, t);
             return "success"
         } catch (error: any) {
-            throw new Error("Cannot delete Raspberry PI! "+ error);
+            throw new Error("Cannot delete Raspberry PI! " + error);
         }
     }
-    
+
     public async createMachineQ(e: Models.Machine, t:
         Models.WorkerNoketInfo): Promise<string | null> {
         try {
@@ -100,27 +100,41 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
             await super.createMachine(e, t);
             return "success"
         } catch (error: any) {
-            throw new Error("Cannot create Machine! "+ error);
+            throw new Error("Cannot create Machine! " + error);
         }
     }
 
     public async getMachineListQ(): Promise<Models.Machine[]> {
-        try{
+        try {
             return await super.getMachineList();
         } catch (error: any) {
-            throw new Error("Cannot load Machine list! "+ error);
+            throw new Error("Cannot load Machine list! " + error);
         }
-   }
-
-   public async updateMachineQ(e: Models.Machine, t:
-    Models.WorkerNoketInfo): Promise<string | null> {
-    try {
-        await super.updateMachine(e, t);
-        return "success"
-    } catch (error: any) {
-        throw new Error("Cannot update Machine! "+ error);
     }
-}
+
+    public async updateMachineQ(e: Models.Machine, t:
+        Models.WorkerNoketInfo): Promise<string | null> {
+        try {
+            await super.updateMachine(e, t);
+            return "success"
+        } catch (error: any) {
+            throw new Error("Cannot update Machine! " + error);
+        }
+    }
+
+    public async deleteMachineQ(e: Models.MachineDeleteParam, t:
+        Models.WorkerNoketInfo): Promise<string | null> {
+        try {
+            await super.deleteMachine(e, t);
+            return "success"
+        } catch (error: any) {
+            throw new Error("Cannot delete Machine! "+ error);
+        }
+    }
+
+    public async getWorkerListQ(): Promise<Models.WorkerInfo[]> {
+        return (await super.getWorkerList());
+   }
 }
 
 export default ControlPanelApi
