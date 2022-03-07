@@ -54,6 +54,11 @@ const resolvers = {
             const t = SwitchbotAPI.TokenDecode(Token);
             return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
                 ControlPanelAPI.getWorkerListQ() : [];
+        },
+        AccountType: async (_: any, __: any, { SwitchbotAPI, Token, UserAPI }: Context):
+            Promise<Models.AccountType[] | null> => {
+            return await SwitchbotAPI.TokenValidate(Token) ?
+                await UserAPI.getAccountTypeQ() : [];
         }
     },
     Mutation: {
@@ -172,7 +177,18 @@ const resolvers = {
                 return await ControlPanelAPI.deleteMachineQ(args.input, t);
             }
             return null;
-        }
+        },
+        createAccount: async (_: any, args: Models.CreateAccountArgs,
+            { ControlPanelAPI, SwitchbotAPI, UserAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                const x = (await ControlPanelAPI.getWorkerListQ())
+                ?.find(x => x.GIDFull === args.input.GIDFull);
+                return x ? "duplicate" : await UserAPI.createAccountQ(args.input, t);
+            }
+            return null
+        },
     },
     Machine: {
         RaspiList: async (parent: Models.MachineArg, w_: any,

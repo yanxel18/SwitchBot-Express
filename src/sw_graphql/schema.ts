@@ -8,6 +8,7 @@ const typeDefs = gql`
         RaspiList: [RaspiList]
         MachineFilter (filter:MachineF ): [Machine]!  
         WorkerList: [WorkerInfo]
+        AccountType: [AccountType]
     }
  
     type Mutation {
@@ -23,6 +24,7 @@ const typeDefs = gql`
         createMachine(input: MachineCreateParam!): String
         updateMachine(input: MachineUpdateParam!): String
         deleteMachine(input: MachineDeleteParam!): String
+        createAccount(input: CreateAccount!): String
     }
     type WorkerToken {
         Noket: String
@@ -73,10 +75,10 @@ const typeDefs = gql`
         raspiServer: String!
     }
     type WorkerInfo {
-        ID: Int!,
-        FullName: String!,
-        AccLvl: Int!,
-        UserQR: String!,
+        ID: Int!
+        FullName: String!
+        AccLvl: Int!
+        UserQR: String!
         GIDFull: String!
     }
 
@@ -86,6 +88,18 @@ const typeDefs = gql`
     type EMessages {
         eventMSGID: Int
         eventMSG: String
+    }
+
+    type AccountType {
+        acclvlID: Int
+        accType: String
+    }
+    
+    input CreateAccount { 
+        FullName: String!,
+        AccLvl: Int!, 
+        GIDFull: String!,
+        Pass: String!
     } 
     input SwitchbotFilter{
         switchbotID: Int

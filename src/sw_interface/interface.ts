@@ -82,6 +82,9 @@ export interface WorkerInfo{
     GIDFull: string
 }
 
+export interface WorkerInfoRegister extends WorkerInfo{
+    Pass: string
+}
 export interface WorkerNoketInfo{
     uid: number,
     mID: number,
@@ -103,10 +106,10 @@ export interface EMessages {
 } 
  
 export interface EventParam {  
-        msgID: number,
-        mID?: number,
-        sbid?: number,
-        userid?: number 
+    msgID: number,
+    mID?: number,
+    sbid?: number,
+    userid?: number 
 }
 export interface Machine {
     machineID?: number,
@@ -116,6 +119,10 @@ export interface Machine {
     machineQR?: string
 }
 
+export interface AccountType {
+    acclvlID?: number,
+    accType?: string
+}
 export interface SwitchbotFilter{
     filter: {
         switchbotID?: number,
@@ -123,7 +130,7 @@ export interface SwitchbotFilter{
     }
 }
 export interface SwitchbotDeleteParam{
-        switchbotID: number
+    switchbotID: number
 }
 export interface ArgsInput {
     input: EventParam
@@ -174,4 +181,8 @@ export interface UpdateMachineArgs {
 
 export interface MachineDeleteArgs {
     input : MachineDeleteParam
+}
+
+export interface CreateAccountArgs {
+    input: WorkerInfoRegister
 }
