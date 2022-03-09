@@ -4,10 +4,10 @@ import { Request } from 'express';
 import Context from './context';
 const resolvers = {
     Query: {
-        MachineList:  async (_: any, __: any, { SwitchbotAPI, ControlPanelAPI, Token }: Context): 
+        MachineList: async (_: any, __: any, { SwitchbotAPI, ControlPanelAPI, Token }: Context):
             Promise<Models.Machine[] | []> => {
             return await SwitchbotAPI.TokenValidate(Token) ?
-                await ControlPanelAPI.getMachineListQ()  : []
+                await ControlPanelAPI.getMachineListQ() : []
         },
         Machine: async (parent: any, args: Models.MachineArg,
             { SwitchbotAPI, Token }: Context): Promise<Models.MachineList | undefined | []> => {
@@ -31,16 +31,16 @@ const resolvers = {
             return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
                 SwitchbotAPI.getRaspiQ() : [];
         },
-        SwitchBot: async (_: any, { filter }: Models.SwitchbotFilter, 
+        SwitchBot: async (_: any, { filter }: Models.SwitchbotFilter,
             { SwitchbotAPI, ControlPanelAPI, Token }: Context):
             Promise<Models.SwitchBot[] | null | Models.SwitchBot> => {
             const t = SwitchbotAPI.TokenDecode(Token);
-            const sblist = await  ControlPanelAPI.getSwitchbotListQ();
+            const sblist = await ControlPanelAPI.getSwitchbotListQ();
             console.log(filter);
-            if (filter?.switchbotID) 
+            if (filter?.switchbotID)
                 return sblist?.filter(x => x.switchbotID === filter.switchbotID) || null;
-            if (filter?.switchbotRaspiIDisNull) 
-                return sblist?.filter(x => x.switchbotRaspiID !== null) || null; 
+            if (filter?.switchbotRaspiIDisNull)
+                return sblist?.filter(x => x.switchbotRaspiID !== null) || null;
             return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
                 ControlPanelAPI.getSwitchbotListQ() : null;
         },
@@ -79,7 +79,7 @@ const resolvers = {
             const t = SwitchbotAPI.TokenDecode(Token);
             if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
                 const x = (await ControlPanelAPI.getSwitchbotListQ())
-                ?.find(x => x.switchbotMac === args.input.switchbotMac);
+                    ?.find(x => x.switchbotMac === args.input.switchbotMac);
                 return x ? "duplicate" : await ControlPanelAPI.createSwitchBotQ(args.input, t);
             }
             return null
@@ -159,13 +159,13 @@ const resolvers = {
             { ControlPanelAPI, SwitchbotAPI, Token }: Context):
             Promise<string | null> => {
             const t = SwitchbotAPI.TokenDecode(Token);
-            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) { 
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
                 const a = ((await ControlPanelAPI.getMachineListQ())?.
                     filter(b => b.machineID !== args.input.machineID))?.
                     filter(c => c.machineName === args.input.machineName &&
                         c.machineModel === args.input.machineModel);
                 if (a) if (a.length > 0) return "duplicate";
-                return await ControlPanelAPI.updateMachineQ(args.input, t); 
+                return await ControlPanelAPI.updateMachineQ(args.input, t);
             }
             return null
         },
@@ -184,11 +184,37 @@ const resolvers = {
             const t = SwitchbotAPI.TokenDecode(Token);
             if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
                 const x = (await ControlPanelAPI.getWorkerListQ())
-                ?.find(x => x.GIDFull === args.input.GIDFull);
+                    ?.find(x => x.GIDFull === args.input.GIDFull);
                 return x ? "duplicate" : await UserAPI.createAccountQ(args.input, t);
             }
             return null
         },
+        updateAccount: async (_: any, args: Models.UpdateAccountArgs,
+            { ControlPanelAPI, SwitchbotAPI, UserAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                const x = (await ControlPanelAPI.getWorkerListQ())
+                    ?.find(x => x.GIDFull === args.input.GIDFull);
+                return x ? "duplicate" : await UserAPI.updateAccountQ(args.input, t);
+            }
+            return null
+        },
+        updatePass: async (_: any, args: Models.UpdatePassArgs,
+            { SwitchbotAPI, UserAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            if (await SwitchbotAPI.TokenValidate(Token) && t && Token) {
+                return await UserAPI.updatePasswordQ(args.input, t);
+            }
+            return null
+        },
+        accessInfo: async (_: any, args: Models.LogInfoArgs,
+            { UserAPI }: Context): Promise<Models.AccessInfo | null | string> => {
+            if (args.input) return await UserAPI.authenticateAccountQ(args.input);
+            else return null
+
+        }
     },
     Machine: {
         RaspiList: async (parent: Models.MachineArg, w_: any,

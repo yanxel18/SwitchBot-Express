@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+import { WorkerInfo } from './../sw_interface/interface';
 /* eslint-disable max-len */
 
 import DBConnection from "../sw_connection/connection";
@@ -5,13 +7,13 @@ import * as Models from "../sw_interface/interface";
 import sql, { IProcedureResult, IRecordSet, IResult } from 'mssql';
 
 interface IUserAction {
-    createAccount: (userInfo: Models.WorkerInfoRegister, t: Models.WorkerNoketInfo, passCrypt: string) =>
+    createAccount: (userInfo: Models.WorkerInfo, t: Models.WorkerNoketInfo, passCrypt: string) =>
         Promise<IRecordSet<any>>,
     getAccountType: () => Promise<Models.AccountType[]>
 }
 class UserAction extends DBConnection implements IUserAction {
 
-    public async createAccount(userInfo: Models.WorkerInfoRegister,
+    public async createAccount(userInfo: Models.WorkerInfo,
         t: Models.WorkerNoketInfo, passCrypt: string):
         Promise<IRecordSet<any>> {
         const con = await super.openConnect();
@@ -36,6 +38,49 @@ class UserAction extends DBConnection implements IUserAction {
             result => { return result.recordset; }
         ) || null;
 
+    }
+
+    public async updateAccount(userInfo: Models.WorkerInfo, t: Models.WorkerNoketInfo):
+        Promise<IRecordSet<any>> {
+        const con = await super.openConnect();
+        return await con.request()
+            .input('ID', sql.TinyInt, userInfo.ID)
+            .input('FullName', sql.NVarChar(20), userInfo.FullName)
+            .input('AccLvl', sql.TinyInt, userInfo.AccLvl)
+            .input('uid', sql.SmallInt, t.uid)
+            .execute('sp_update_account').then(
+                result => {
+                    return result.recordset
+                }
+            ) || null;
+    }
+
+    public async updatePassword(userInfo: Models.WorkerInfo,
+        t: Models.WorkerNoketInfo, passCrypt: string):
+        Promise<IRecordSet<any>> {
+        const con = await super.openConnect();
+        return await con.request()
+            .input('ID', sql.TinyInt, userInfo.ID)
+            .input('PassCrypt', sql.NVarChar(150), passCrypt)
+            .input('uid', sql.SmallInt, t.uid)
+            .execute('sp_update_account_password').then(
+                result => {
+                    return result.recordset
+                }
+            ) || null;
+    }
+
+    public async authenticateAccount(info: Models.LoginInfo): Promise<Models.UserLoginInfo | null> {
+        const con = await super.openConnect();
+        const getInfo: Models.UserLoginInfo[] | null= (await con.request()
+            .input('GIDFull', sql.NVarChar(20), info.GIDFull)
+            .execute('sp_login').then(
+                result => {
+                    return result.recordset
+                }
+            ) || null);
+        if (getInfo) return getInfo[0];
+        else return null;
     }
 }
 

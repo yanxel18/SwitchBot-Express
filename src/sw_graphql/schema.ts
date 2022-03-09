@@ -25,6 +25,9 @@ const typeDefs = gql`
         updateMachine(input: MachineUpdateParam!): String
         deleteMachine(input: MachineDeleteParam!): String
         createAccount(input: CreateAccount!): String
+        updateAccount(input: UpdateAccount!): String
+        updatePass(input: UpdatePass!): String
+        accessInfo(input: LoginParam): AccessInfo
     }
     type WorkerToken {
         Noket: String
@@ -82,6 +85,12 @@ const typeDefs = gql`
         GIDFull: String!
     }
 
+    type WorkerInfoUser{
+        ID: Int!
+        FullName: String!
+        AccLvl: Int! 
+        GIDFull: String!
+    }
     type MessageInfo {
         messages: [EMessages]
     }
@@ -89,7 +98,11 @@ const typeDefs = gql`
         eventMSGID: Int
         eventMSG: String
     }
-
+    
+    type AccessInfo {
+        UserInfo: WorkerInfoUser
+        Noket: String 
+    } 
     type AccountType {
         acclvlID: Int
         accType: String
@@ -100,7 +113,21 @@ const typeDefs = gql`
         AccLvl: Int!, 
         GIDFull: String!,
         Pass: String!
+    }
+
+    input UpdateAccount {
+        ID: Int!,
+        FullName: String!,
+        AccLvl: Int!
     } 
+    input LoginParam {
+        GIDFull: String!,
+        Pass: String!
+    }
+    input UpdatePass {
+        ID: Int!
+        Pass: String!
+    }
     input SwitchbotFilter{
         switchbotID: Int
         switchbotRaspiIDisNull: Boolean

@@ -53,6 +53,10 @@ export interface WorkerToken  {
     Noket: string | null, 
 }
 
+export interface AccessInfo {
+    UserInfo?: WorkerInfo,
+    Noket?: string | null
+}
 export interface ErrorMsg { 
     message: string | [] 
 }
@@ -75,14 +79,18 @@ export interface QRCode{
 }
 
 export interface WorkerInfo{
-    ID: number,
-    FullName: string,
-    AccLvl: number,
-    UserQR: string,
-    GIDFull: string
+    ID?: number,
+    FullName?: string,
+    AccLvl?: number,
+    UserQR?: string,
+    GIDFull?: string
 }
 
 export interface WorkerInfoRegister extends WorkerInfo{
+    Pass: string
+}
+
+export interface UserLoginInfo extends WorkerInfo {
     Pass: string
 }
 export interface WorkerNoketInfo{
@@ -158,6 +166,11 @@ export interface CreateMachineParam {
     machineQR?: string
 }
 
+export interface LoginInfo {
+    GIDFull: string,
+    Pass: string
+}
+
 export interface dupcheck {
     check: number
 }
@@ -185,4 +198,16 @@ export interface MachineDeleteArgs {
 
 export interface CreateAccountArgs {
     input: WorkerInfoRegister
+}
+
+export interface UpdateAccountArgs {
+    input : WorkerInfo
+}
+
+export interface UpdatePassArgs {
+    input : WorkerInfoRegister
+}
+
+export interface LogInfoArgs {
+    input: LoginInfo
 }
