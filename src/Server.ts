@@ -5,8 +5,7 @@ import helmet from 'helmet';
 import express, { Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
-import logger from '@shared/Logger';
-import switchbotRouter from './sw_routes/switchbot_routes';
+import logger from '@shared/Logger'; 
 //import * as SwitchbotDB from './sw_route_modules/switchbot_api'; 
 import SwitchbotApi from './sw_route_modules/switchbot_api'; 
 import ControlPanelApi from './sw_route_modules/controlpanel_api';
@@ -47,15 +46,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+    app.use(helmet());
 }
 
 if (process.env.NODE_ENV === 'production') {
     app.use(helmet());
 }
 app.set('etag', false);
-app.set('json spaces', 2);
-app.use("/api", switchbotRouter);
+app.set('json spaces', 2); 
 app.use('/', router);
 app.disable('x-powered-by');
 /*

@@ -4,7 +4,7 @@ import SwitchBotAction from '../sw_modules/switchbot_modules';
 import * as Models from '../sw_interface/interface';
 import { RedisClientType } from 'redis';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { accessTokenSecret } from './../sw_util/keys';
+import { passTokenSecret } from './../sw_util/keys';
 import UserAction from '../sw_modules/user_modules';
 import { v4 as uuidv4 } from 'uuid';
 import { ValidationError } from 'apollo-server-express';
@@ -76,7 +76,7 @@ class UserApi extends UserAction implements IUserApi {
             accessToken = jwt.sign({
                 uid: userInfo.ID,
                 acID: userInfo.AccLvl
-            }, accessTokenSecret, {
+            }, passTokenSecret, {
                 expiresIn: '8h'
             });
             if (accessToken && userInfo.GIDFull)
@@ -92,6 +92,9 @@ class UserApi extends UserAction implements IUserApi {
             if (verifyAccount) {
                 const confirmPass = await bcrypt.compare(userInfo.Pass, verifyAccount.Pass);
                 if (confirmPass) {
+                    if (verifyAccount.AccLvl !== 1) { //change to new Admin acclvl upon data cleanup
+                        throw new ValidationError('Permission Denied!');
+                    }
                     const token = this.generateLoginToken(verifyAccount);
                     return {
                         UserInfo: verifyAccount,
@@ -106,8 +109,8 @@ class UserApi extends UserAction implements IUserApi {
 
     public async writeUserInfoRedisClient(userinfo: Models.WorkerInfo,
         token: string | null): Promise<void> {
-        if (userinfo && token && userinfo.GIDFull)
-            await this.redClient.set(userinfo.GIDFull, token);
+        if (userinfo && token && userinfo.ID)
+            await this.redClient.set(userinfo.ID.toString(), token);
     }
 
     public async getUserInfoRedisClient(userID: string): Promise<string | null> {
@@ -119,20 +122,20 @@ class UserApi extends UserAction implements IUserApi {
         try {
             let tokenData!: Models.WorkerNoketInfo;
             if (token) {
-                const tokenCheck = jwt.verify(token, accessTokenSecret);
+                const tokenCheck = jwt.verify(token, passTokenSecret); 
                 if (tokenCheck) {
                     tokenData = JSON.parse(JSON.stringify(jwt.decode(token)));
-                    const tokenRedis = await this.getUserInfoRedisClient(tokenData.mID.toString());
+                    const tokenRedis = await this.getUserInfoRedisClient(tokenData.acID.toString());
                     if (tokenRedis) {
                         return tokenData;
-                    } else throw new ValidationError('Error occured! Unauthorized! Code: 401');
+                    } else throw new ValidationError('Permission Denied!');
 
                 } return null
             } else {
-                throw new ValidationError('Unauthorized! Code: 401');
+                throw new ValidationError('Permission Denied!');
             }
         } catch (error: any) {
-            throw new ValidationError('Unauthorized! Code: 401');
+            throw new ValidationError('Permission Denied!');
         }
     }
     public UserTokenDecode(token: string | undefined): Models.WorkerNoketInfo | null {

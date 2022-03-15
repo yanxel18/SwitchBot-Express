@@ -3,12 +3,15 @@ const typeDefs = gql`
     type Query{
         SwitchBot (filter: SwitchbotFilter): [SwitchBot]
         MachineList: [MachineList]
+        MachineViewList: [MachineList]
         Machine (id: Int!): Machine
         EventMsg: MessageInfo
         RaspiList: [RaspiList]
         MachineFilter (filter:MachineF ): [Machine]!  
         WorkerList: [WorkerInfo]
+        WorkerViewList: [WorkerInfo]
         AccountType: [AccountType]
+        AccountInfo: [WorkerInfoUser]
     }
  
     type Mutation {
