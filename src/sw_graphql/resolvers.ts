@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
-import * as Models from '../sw_interface/interface';
-import { Request } from 'express';
+import * as Models from '../sw_interface/interface'; 
 import Context from './context';
 const resolvers = {
     Query: {
@@ -15,34 +13,23 @@ const resolvers = {
                 await ControlPanelAPI.getMachineListQ() : []
         },
         Machine: async (parent: any, args: Models.MachineArg,
-            { SwitchbotAPI, Token, UserAPI }: Context): 
-                Promise<Models.MachineList | undefined | []> => {
+            { SwitchbotAPI, Token, UserAPI }: Context):
+            Promise<Models.MachineList | undefined | []> => {
             return await UserAPI.UserTokenValidate(Token) ?
                 (await SwitchbotAPI.getMachineListForTriggerQ())
                     .find(x => x.machineID === args.id) : []
         },
-        MachineFilter: (_: any, args: Models.MachineFilter, { SwitchbotAPI }: Context):
-            Models.MachineList[] => {
-            const { machineID } = args.filter;
-            /* const source = await SwitchbotAPI.getMachineListQ();
-             if (machineID) {
-                 return source.filter(x => x.machineID === machineID);
-             }
-             return source;*/
-            return [];
-        },
-        RaspiList: async (_: any, ___: any, { SwitchbotAPI,UserAPI, Token }:
+        RaspiList: async (_: any, ___: any, { SwitchbotAPI, UserAPI, Token }:
             Context): Promise<Models.Raspi[]> => {
             const t = UserAPI.UserTokenDecode(Token);
             return await UserAPI.UserTokenValidate(Token) && t && Token ?
                 SwitchbotAPI.getRaspiQ() : [];
         },
         SwitchBot: async (_: any, { filter }: Models.SwitchbotFilter,
-            { SwitchbotAPI, ControlPanelAPI, UserAPI, Token }: Context):
+            { ControlPanelAPI, UserAPI, Token }: Context):
             Promise<Models.SwitchBot[] | null | Models.SwitchBot> => {
             const t = UserAPI.UserTokenDecode(Token);
-            const sblist = await ControlPanelAPI.getSwitchbotListQ();
-            console.log(filter);
+            const sblist = await ControlPanelAPI.getSwitchbotListQ(); 
             if (filter?.switchbotID)
                 return sblist?.filter(x => x.switchbotID === filter.switchbotID) || null;
             if (filter?.switchbotRaspiIDisNull)
@@ -71,16 +58,14 @@ const resolvers = {
             Promise<Models.AccountType[] | null> => {
             return await UserAPI.UserTokenValidate(Token) ?
                 await UserAPI.getAccountTypeQ() : [];
-        }, 
+        },
         AccountInfo: async (_: any, __: any,
-            { ControlPanelAPI,UserAPI, Token }: Context):
+            { ControlPanelAPI, UserAPI, Token }: Context):
             Promise<Models.WorkerInfo[] | null> => {
             const t = UserAPI.UserTokenDecode(Token);
             if (await UserAPI.UserTokenValidate(Token) && t && Token) { 
-                console.log(t);
                 const x = (await ControlPanelAPI.getWorkerListQ())
                     ?.filter(x => x.ID === t.uid);
-                    
                 return x;
             }
             return null
@@ -120,8 +105,7 @@ const resolvers = {
         },
         updateSwitchBot: async (_: any, args: Models.SwitchbotArgs,
             { ControlPanelAPI, UserAPI, Token }: Context):
-            Promise<string | null> => {
-            console.log(args);
+            Promise<string | null> => { 
             const t = UserAPI.UserTokenDecode(Token);
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
                 const a = ((await ControlPanelAPI.getSwitchbotListQ())?.
@@ -133,7 +117,7 @@ const resolvers = {
             return null
         },
         updateRaspi: async (_: any, args: Models.RaspiArgs,
-            { ControlPanelAPI, SwitchbotAPI, UserAPI,Token }: Context):
+            { ControlPanelAPI, SwitchbotAPI, UserAPI, Token }: Context):
             Promise<string | null> => {
             const t = UserAPI.UserTokenDecode(Token);
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
@@ -146,7 +130,7 @@ const resolvers = {
             return null;
         },
         createRaspi: async (_: any, args: Models.RaspiCreateArgs,
-            { ControlPanelAPI, SwitchbotAPI,UserAPI, Token }: Context):
+            { ControlPanelAPI, SwitchbotAPI, UserAPI, Token }: Context):
             Promise<string | null> => {
             const t = UserAPI.UserTokenDecode(Token);
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
@@ -168,7 +152,7 @@ const resolvers = {
             return null;
         },
         createMachine: async (_: any, args: Models.CreateMachineArgs,
-            { ControlPanelAPI, SwitchbotAPI, UserAPI, Token }: Context):
+            { ControlPanelAPI, UserAPI, Token }: Context):
             Promise<string | null> => {
             const t = UserAPI.UserTokenDecode(Token);
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
@@ -204,7 +188,7 @@ const resolvers = {
             return null;
         },
         createAccount: async (_: any, args: Models.CreateAccountArgs,
-            { ControlPanelAPI, SwitchbotAPI, UserAPI, Token }: Context):
+            { ControlPanelAPI, UserAPI, Token }: Context):
             Promise<string | null> => {
             const t = UserAPI.UserTokenDecode(Token);
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
@@ -215,7 +199,7 @@ const resolvers = {
             return null
         },
         updateAccount: async (_: any, args: Models.UpdateAccountArgs,
-            { ControlPanelAPI, SwitchbotAPI, UserAPI, Token }: Context):
+            { ControlPanelAPI, UserAPI, Token }: Context):
             Promise<string | null> => {
             const t = UserAPI.UserTokenDecode(Token);
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
@@ -226,7 +210,7 @@ const resolvers = {
             return null
         },
         updatePass: async (_: any, args: Models.UpdatePassArgs,
-            { SwitchbotAPI, UserAPI, Token }: Context):
+            { UserAPI, Token }: Context):
             Promise<string | null> => {
             const t = UserAPI.UserTokenDecode(Token);
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
@@ -235,7 +219,7 @@ const resolvers = {
             return null
         },
         accessInfo: async (_: any, args: Models.LogInfoArgs,
-            { UserAPI, Token }: Context): Promise<Models.AccessInfo | null | string> => {
+            { UserAPI }: Context): Promise<Models.AccessInfo | null | string> => {
             if (args.input) return await UserAPI.authenticateAccountQ(args.input);
             else return null
 

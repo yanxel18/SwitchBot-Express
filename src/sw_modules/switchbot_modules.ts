@@ -1,10 +1,7 @@
-/* eslint-disable max-len */
-/* eslint-disable no-console */
 import DBConnection from "../sw_connection/connection";
 import * as Models from "../sw_interface/interface";
-import sql, { IProcedureResult, IRecordSet, IResult } from 'mssql';
+import sql, { IRecordSet } from 'mssql';
 import bcrypt from 'bcrypt';
-import { QRInfo } from "../sw_interface/interface";
 
 interface ISwitchBotAction {
     getMachineListForTrigger: () => Promise<Models.MachineList[]>,//for deletion
@@ -13,15 +10,14 @@ interface ISwitchBotAction {
     generateToken: (qr: Models.machineQR) => Promise<string>,
     getMachineInfo: (qr: Models.machineQR) => Promise<Models.MachineList[]>,
     getWorkerInfo: (uid: number) => Promise<Models.WorkerInfo[]>,
-    getEventMSG: () => Promise<Models.EMessages[] | []>
+    getEventMSG: () => Promise<Models.EMessages[] | []>,
+    createEventLogs: (c: Models.EventParam) => Promise<IRecordSet<any>>
 }
 
 class SwitchBotAction extends DBConnection implements ISwitchBotAction {
     constructor() {
         super();
-    }
-    //for deletion this getMachineList
-    //delete also the schema fro graphql
+    } 
     public async getMachineListForTrigger(): Promise<Models.MachineList[]> {
         const con = await super.openConnect();
         const query = "select * from view_machine_select";

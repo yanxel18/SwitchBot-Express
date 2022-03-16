@@ -1,29 +1,35 @@
-/* eslint-disable max-len */
-/* eslint-disable no-console */
 import DBConnection from "../sw_connection/connection";
 import * as Models from "../sw_interface/interface";
-import sql, { IProcedureResult, IRecordSet, IResult } from 'mssql';
+import sql, { IRecordSet } from 'mssql';
 
 interface IControlPanelAction {
-    createSwitchbot: (c: Models.SwitchBot, t: Models.WorkerNoketInfo) => Promise<Models.dupcheck[] | null>,
-    getSwitchbotList:() => Promise<Models.SwitchBot[]>,
-    deleteSwitchBot: (p: Models.SwitchbotDeleteParam, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
+    createSwitchbot: (c: Models.SwitchBot, 
+        t: Models.WorkerNoketInfo) => Promise<Models.dupcheck[] | null>,
+    getSwitchbotList: () => Promise<Models.SwitchBot[]>,
+    deleteSwitchBot: (p: Models.SwitchbotDeleteParam, 
+        t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
     updateSwitchbot: (p: Models.SwitchBot, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
     updateRaspi: (p: Models.Raspi, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
-    createRaspi: (c: Models.Raspi, t: Models.WorkerNoketInfo)=> Promise<Models.dupcheck[] | null>,
-    deleteRaspi: (p: Models.RaspiDeleteParam, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
-    createMachine: (c: Models.Machine, t: Models.WorkerNoketInfo, qr: string) => Promise<Models.dupcheck[] | null>,
+    createRaspi: (c: Models.Raspi, 
+        t: Models.WorkerNoketInfo) => Promise<Models.dupcheck[] | null>,
+    deleteRaspi: (p: Models.RaspiDeleteParam, 
+        t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
+    createMachine: (c: Models.Machine, 
+        t: Models.WorkerNoketInfo, qr: string) => Promise<Models.dupcheck[] | null>,
     getMachineList: () => Promise<Models.Machine[]>,
-    updateMachine: (p: Models.Machine, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
-    deleteMachine: (p: Models.MachineDeleteParam, t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>
-
+    updateMachine: (p: Models.Machine, 
+        t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
+    deleteMachine: (p: Models.MachineDeleteParam, 
+        t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
+    getWorkerList: () => Promise<Models.WorkerInfo[]>
 }
 class ControlPanelAction extends DBConnection implements IControlPanelAction {
     constructor() {
         super();
     }
 
-    public async createSwitchbot(c: Models.SwitchBot, t: Models.WorkerNoketInfo): Promise<Models.dupcheck[] | null> {
+    public async createSwitchbot(c: Models.SwitchBot, t: Models.WorkerNoketInfo):
+     Promise<Models.dupcheck[] | null> {
         const con = await super.openConnect();
         return await con.request()
             .input('switchbotName', sql.NVarChar(50), c.switchbotName)
@@ -44,10 +50,11 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
         ) || null;
     }
 
-    public async deleteSwitchBot(p: Models.SwitchbotDeleteParam, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+    public async deleteSwitchBot(p: Models.SwitchbotDeleteParam, t: Models.WorkerNoketInfo):
+     Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
-            .input('switchbotID', sql.SmallInt, p.switchbotID) 
+            .input('switchbotID', sql.SmallInt, p.switchbotID)
             .input('userID', sql.SmallInt, t.uid)
             .execute('sp_delete_switchbot').then(
                 result => {
@@ -55,13 +62,14 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
                 }
             ) || null;
     }
-    public async updateSwitchbot(p: Models.SwitchBot, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+    public async updateSwitchbot(p: Models.SwitchBot, t: Models.WorkerNoketInfo):
+     Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
-            .input('switchbotID', sql.SmallInt, p.switchbotID) 
-            .input('switchbotName', sql.NVarChar(50), p.switchbotName) 
+            .input('switchbotID', sql.SmallInt, p.switchbotID)
+            .input('switchbotName', sql.NVarChar(50), p.switchbotName)
             .input('switchbotMac', sql.NVarChar(20), p.switchbotMac)
-            .input('switchbotRaspiID', sql.SmallInt, p.switchbotRaspiID) 
+            .input('switchbotRaspiID', sql.SmallInt, p.switchbotRaspiID)
             .input('userID', sql.SmallInt, t.uid)
             .execute('sp_update_switchbot').then(
                 result => {
@@ -73,9 +81,9 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
     public async updateRaspi(p: Models.Raspi, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
-            .input('raspiID', sql.SmallInt, p.raspiID) 
-            .input('raspiName', sql.NVarChar(50), p.raspiName) 
-            .input('raspiServer', sql.NVarChar(300), p.raspiServer) 
+            .input('raspiID', sql.SmallInt, p.raspiID)
+            .input('raspiName', sql.NVarChar(50), p.raspiName)
+            .input('raspiServer', sql.NVarChar(300), p.raspiServer)
             .input('userID', sql.SmallInt, t.uid)
             .execute('sp_update_raspi').then(
                 result => {
@@ -83,7 +91,8 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
                 }
             ) || null;
     }
-    public async createRaspi(c: Models.Raspi, t: Models.WorkerNoketInfo): Promise<Models.dupcheck[] | null> {
+    public async createRaspi(c: Models.Raspi, t: Models.WorkerNoketInfo):
+     Promise<Models.dupcheck[] | null> {
         const con = await super.openConnect();
         return await con.request()
             .input('raspiName', sql.NVarChar(50), c.raspiName)
@@ -95,10 +104,11 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
                 }
             ) || null;
     }
-    public async deleteRaspi(p: Models.RaspiDeleteParam, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+    public async deleteRaspi(p: Models.RaspiDeleteParam, t: Models.WorkerNoketInfo): 
+    Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
-            .input('raspiID', sql.SmallInt, p.raspiID) 
+            .input('raspiID', sql.SmallInt, p.raspiID)
             .input('userID', sql.SmallInt, t.uid)
             .execute('sp_delete_raspi').then(
                 result => {
@@ -107,7 +117,7 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
             ) || null;
     }
 
-    public async createMachine(c: Models.Machine, t: Models.WorkerNoketInfo): 
+    public async createMachine(c: Models.Machine, t: Models.WorkerNoketInfo):
         Promise<Models.dupcheck[] | null> {
         const con = await super.openConnect();
         return await con.request()
@@ -130,13 +140,14 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
         ) || null;
     }
 
-    public async updateMachine(p: Models.Machine, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+    public async updateMachine(p: Models.Machine, t: Models.WorkerNoketInfo): 
+    Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
-            .input('machineID', sql.SmallInt, p.machineID) 
-            .input('machineName', sql.NVarChar(50), p.machineName) 
+            .input('machineID', sql.SmallInt, p.machineID)
+            .input('machineName', sql.NVarChar(50), p.machineName)
             .input('machineModel', sql.NVarChar(50), p.machineModel)
-            .input('machineSwitchbotID', sql.SmallInt, p.machineSwitchbotID) 
+            .input('machineSwitchbotID', sql.SmallInt, p.machineSwitchbotID)
             .input('userID', sql.SmallInt, t.uid)
             .execute('sp_update_machine').then(
                 result => {
@@ -145,10 +156,11 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
             ) || null;
     }
 
-    public async deleteMachine(p: Models.MachineDeleteParam, t: Models.WorkerNoketInfo): Promise<IRecordSet<any>> {
+    public async deleteMachine(p: Models.MachineDeleteParam, t: Models.WorkerNoketInfo):
+     Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
-            .input('machineID', sql.SmallInt, p.machineID) 
+            .input('machineID', sql.SmallInt, p.machineID)
             .input('userID', sql.SmallInt, t.uid)
             .execute('sp_delete_machine').then(
                 result => {

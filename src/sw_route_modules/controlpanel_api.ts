@@ -17,7 +17,12 @@ interface IControlPanelApi {
         Models.WorkerNoketInfo) => Promise<string | null>,
     createMachineQ: (e: Models.Machine, t:
         Models.WorkerNoketInfo) => Promise<string | null>,
-    getMachineListQ: () => Promise<Models.Machine[]>
+    getMachineListQ: () => Promise<Models.Machine[]>,
+    updateMachineQ: (e: Models.Machine, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    deleteMachineQ: (e: Models.MachineDeleteParam, t:
+        Models.WorkerNoketInfo)=> Promise<string | null>,
+    getWorkerListQ: () => Promise<Models.WorkerInfo[]>        
 }
 
 class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {

@@ -7,7 +7,6 @@ const typeDefs = gql`
         Machine (id: Int!): Machine
         EventMsg: MessageInfo
         RaspiList: [RaspiList]
-        MachineFilter (filter:MachineF ): [Machine]!  
         WorkerList: [WorkerInfo]
         WorkerViewList: [WorkerInfo]
         AccountType: [AccountType]

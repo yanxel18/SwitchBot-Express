@@ -1,16 +1,18 @@
-/* eslint-disable no-console */
-import { WorkerInfo } from './../sw_interface/interface';
-/* eslint-disable max-len */
-
 import DBConnection from "../sw_connection/connection";
 import * as Models from "../sw_interface/interface";
-import sql, { IProcedureResult, IRecordSet, IResult } from 'mssql';
+import sql, { IRecordSet } from 'mssql';
 
 interface IUserAction {
     createAccount: (userInfo: Models.WorkerInfo, t: Models.WorkerNoketInfo, passCrypt: string) =>
         Promise<IRecordSet<any>>,
-    getAccountType: () => Promise<Models.AccountType[]>
+    getAccountType: () => Promise<Models.AccountType[]>,
+    updateAccount: (userInfo: Models.WorkerInfo, t: Models.WorkerNoketInfo) =>
+        Promise<IRecordSet<any>>,
+    updatePassword: (userInfo: Models.WorkerInfo,
+        t: Models.WorkerNoketInfo, passCrypt: string) => Promise<IRecordSet<any>>,
+    authenticateAccount: (info: Models.LoginInfo) => Promise<Models.UserLoginInfo | null>
 }
+
 class UserAction extends DBConnection implements IUserAction {
 
     public async createAccount(userInfo: Models.WorkerInfo,
@@ -72,7 +74,7 @@ class UserAction extends DBConnection implements IUserAction {
 
     public async authenticateAccount(info: Models.LoginInfo): Promise<Models.UserLoginInfo | null> {
         const con = await super.openConnect();
-        const getInfo: Models.UserLoginInfo[] | null= (await con.request()
+        const getInfo: Models.UserLoginInfo[] | null = (await con.request()
             .input('GIDFull', sql.NVarChar(20), info.GIDFull)
             .execute('sp_login').then(
                 result => {

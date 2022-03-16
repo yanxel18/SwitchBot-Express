@@ -1,16 +1,29 @@
-/* eslint-disable no-console */
 import bcrypt from 'bcrypt';
-import SwitchBotAction from '../sw_modules/switchbot_modules';
 import * as Models from '../sw_interface/interface';
 import { RedisClientType } from 'redis';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { passTokenSecret } from './../sw_util/keys';
 import UserAction from '../sw_modules/user_modules';
 import { v4 as uuidv4 } from 'uuid';
 import { ValidationError } from 'apollo-server-express';
 
 interface IUserApi {
-    generatePassword: (userPass: string) => Promise<string>
+    createAccountQ: (userInfo: Models.WorkerInfoRegister,
+        t: Models.WorkerNoketInfo) => Promise<string | null>,
+    getAccountTypeQ: () => Promise<Models.AccountType[] | null>,
+    updateAccountQ: (e: Models.WorkerInfo, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    updatePasswordQ: (userInfo: Models.WorkerInfoRegister, t:
+        Models.WorkerNoketInfo) => Promise<string | null>,
+    generatePassword: (userPass: string) => Promise<string>,
+    authenticateAccountQ: (userInfo: Models.LoginInfo) =>
+        Promise<Models.AccessInfo | null>,
+    writeUserInfoRedisClient: (userinfo: Models.WorkerInfo,
+        token: string | null) => Promise<void>,
+    getUserInfoRedisClient: (userID: string) => Promise<string | null>,
+    UserTokenValidate: (token: string | undefined) =>
+        Promise<Models.WorkerNoketInfo | null>,
+    UserTokenDecode: (token: string | undefined) => Models.WorkerNoketInfo | null
 }
 
 class UserApi extends UserAction implements IUserApi {
@@ -122,7 +135,7 @@ class UserApi extends UserAction implements IUserApi {
         try {
             let tokenData!: Models.WorkerNoketInfo;
             if (token) {
-                const tokenCheck = jwt.verify(token, passTokenSecret); 
+                const tokenCheck = jwt.verify(token, passTokenSecret);
                 if (tokenCheck) {
                     tokenData = JSON.parse(JSON.stringify(jwt.decode(token)));
                     const tokenRedis = await this.getUserInfoRedisClient(tokenData.acID.toString());

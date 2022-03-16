@@ -1,12 +1,9 @@
 /* eslint-disable no-console */
 import cookieParser from 'cookie-parser';
-import morgan from 'morgan';
+//import morgan from 'morgan';
 import helmet from 'helmet';
-import express, { Request, Response } from 'express';
-import StatusCodes from 'http-status-codes';
-import 'express-async-errors';
-import logger from '@shared/Logger'; 
-//import * as SwitchbotDB from './sw_route_modules/switchbot_api'; 
+import express, { Request } from 'express'; 
+import 'express-async-errors'; 
 import SwitchbotApi from './sw_route_modules/switchbot_api'; 
 import ControlPanelApi from './sw_route_modules/controlpanel_api';
 import UserApi from './sw_route_modules/user_api';
@@ -15,14 +12,12 @@ import resolvers from './sw_graphql/resolvers';
 import { ApolloServer } from 'apollo-server-express'; 
 import RedisClient from './sw_util/redis';
 import Context from './sw_graphql/context'; 
-const redisclient = new RedisClient();
-//redisclient.executeRedis(); 
+const redisclient = new RedisClient(); 
 const app = express();
 const router = express.Router();
 const SwitchbotAPI = new SwitchbotApi(redisclient.client);
 const ControlPanelAPI = new ControlPanelApi();
-const UserAPI = new UserApi(redisclient.client)
-const { BAD_REQUEST } = StatusCodes;
+const UserAPI = new UserApi(redisclient.client) 
 
 const server = new ApolloServer({
     typeDefs,
@@ -56,16 +51,7 @@ app.set('etag', false);
 app.set('json spaces', 2); 
 app.use('/', router);
 app.disable('x-powered-by');
-/*
-app.use((err: Error, req: Request, res: Response) => {
-    logger.err(err, true);
-    return res.status(BAD_REQUEST).json({
-        error: err.message,
-    });
-});
-router.get('*', (req: Request, res: Response) => {
-    res.status(StatusCodes.NOT_FOUND).json(JSON.parse(`{"result":"Page not found! 404"}`));
-});*/
+ 
 async function startServer() {
     await server.start();
     server.applyMiddleware({ app: app, path: '/graphql' });
