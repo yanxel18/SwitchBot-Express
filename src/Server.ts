@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable no-console */
 import cookieParser from 'cookie-parser';
 //import morgan from 'morgan';
@@ -18,7 +19,25 @@ const router = express.Router();
 const SwitchbotAPI = new SwitchbotApi(redisclient.client);
 const ControlPanelAPI = new ControlPanelApi();
 const UserAPI = new UserApi(redisclient.client) 
+import { Router } from "express";
+import axios from 'axios';
 
+const testroute = Router();
+testroute.get('/test', async function(req,res) {
+    axios.defaults.baseURL = 'https://gorest.co.in'
+   res.send(await axios.get("/public/v2/posts", 
+   { proxy:{
+       protocol: "https",
+       host: "proxy-s01.yuden.co.jp",
+       port: 8080,
+       auth: {
+           username: "jt0191340",
+           password: "jt01913401"
+       }
+   }}).catch((error)=>{
+       console.log(error)
+   }));
+});
 const server = new ApolloServer({
     typeDefs,
     resolvers,

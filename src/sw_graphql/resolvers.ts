@@ -123,7 +123,9 @@ const resolvers = {
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
                 const a = ((await SwitchbotAPI.getRaspiQ())?.
                     filter(b => b.raspiID !== args.input.raspiID))?.
-                    filter(c => c.raspiServer === args.input.raspiServer);
+                    filter(c => c.raspiServer?.split('/')[2].split(':')[0] 
+                    === args.input.raspiServer?.split('/')[2].split(':')[0]
+                        || c.raspiName === args.input.raspiName);
                 if (a) if (a.length > 0) return "duplicate";
                 return await ControlPanelAPI.updateRaspiQ(args.input, t);
             }
@@ -136,7 +138,9 @@ const resolvers = {
             if (await UserAPI.UserTokenValidate(Token) && t && Token) {
                 const a = ((await SwitchbotAPI.getRaspiQ())?.
                     filter(b => b.raspiID !== args.input.raspiID))?.
-                    filter(c => c.raspiServer === args.input.raspiServer);
+                    filter(c => c.raspiServer?.split('/')[2].split(':')[0]
+                     === args.input.raspiServer?.split('/')[2].split(':')[0]
+                        || c.raspiName === args.input.raspiName);
                 if (a) if (a.length > 0) return "duplicate";
                 return await ControlPanelAPI.createRaspiQ(args.input, t);
             }
