@@ -70,6 +70,25 @@ const resolvers = {
             }
             return null
         },
+        EventMsgList: async (_: any, __: any, {UserAPI, SwitchbotAPI, Token }: Context):
+            Promise<Models.EMessages[] | null> => {
+            return UserAPI.UserTokenDecode(Token) ?
+                await SwitchbotAPI.getEventMSGListQ() : null;
+        },
+        TerminalList: async (_: any, ___: any, { UserAPI, ControlPanelAPI, Token }:
+            Context): Promise<Models.Terminal[]> => {
+            const t = UserAPI.UserTokenDecode(Token);
+            return await UserAPI.UserTokenValidate(Token) && t && Token ?
+                ControlPanelAPI.getTerminalsQ() : [];
+        },
+        TerminalEvents: async (_: any, { filter }: Models.TerminalMsgIDFilter,
+             { UserAPI, ControlPanelAPI, Token }:
+            Context): Promise<Models.TerminalEvents[]> => {
+            const t = UserAPI.UserTokenDecode(Token);
+            return await UserAPI.UserTokenValidate(Token) && t && Token ?
+                 (await ControlPanelAPI.getTerminalEventsQ())
+                 .filter(x => x.termID === filter.termID) : [];
+        }
     },
     Mutation: {
         createEventLogs: async (_: any, args: Models.ArgsInput,
@@ -168,6 +187,15 @@ const resolvers = {
             }
             return null;
         },
+        createTabletEvent: async (_: any, args: Models.TabletEventsArgs,
+            { ControlPanelAPI, UserAPI, Token }: Context):
+            Promise<string | null> => {
+            const t = UserAPI.UserTokenDecode(Token);
+            if (await UserAPI.UserTokenValidate(Token) && t && Token) {
+                return await ControlPanelAPI.createTabletEventQ(args.input, t);
+            }
+            return null;
+        },
         updateMachine: async (_: any, args: Models.UpdateMachineArgs,
             { ControlPanelAPI, UserAPI, Token }: Context):
             Promise<string | null> => {
@@ -230,7 +258,7 @@ const resolvers = {
         }
     },
     Machine: {
-        RaspiList: async (parent: Models.MachineArg, w_: any,
+        RaspiList: async (parent: Models.MachineArg, _: any,
             { SwitchbotAPI }: Context)
             : Promise<Models.Raspi[]> => {
             const { raspiID } = parent;
@@ -238,7 +266,7 @@ const resolvers = {
         }
     },
     SwitchBot: {
-        RaspiList: async (parent: Models.SwitchBot, w_: any,
+        RaspiList: async (parent: Models.SwitchBot, _: any,
             { SwitchbotAPI }: Context)
             : Promise<Models.Raspi[]> => {
             const { switchbotRaspiID } = parent;

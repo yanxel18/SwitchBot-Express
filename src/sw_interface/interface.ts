@@ -86,6 +86,10 @@ export interface WorkerInfo{
     GIDFull?: string
 }
 
+export interface TabletEvents {
+    eventMSGID: number,
+    terminalID: number
+}
 export interface WorkerInfoRegister extends WorkerInfo{
     Pass: string
 }
@@ -112,6 +116,16 @@ export interface EMessages {
     eventMSGID: number,
     eventMSG: string
 } 
+
+export interface Terminal {
+    terminalID: number,
+    terminalName: string
+}
+export interface TerminalEvents {
+    termID: number,
+    termMsgID: number,
+    termEventMsg: string,
+}
  
 export interface EventParam {  
     msgID: number,
@@ -135,6 +149,11 @@ export interface SwitchbotFilter{
     filter: {
         switchbotID?: number,
         switchbotRaspiIDisNull?: boolean
+    }
+}
+export interface TerminalMsgIDFilter{
+    filter: {
+        termID: number
     }
 }
 export interface SwitchbotDeleteParam{
@@ -165,12 +184,17 @@ export interface CreateMachineParam {
     machineModel?: string,
     machineQR?: string
 }
-
+export interface TabletEventsParam {
+    eventMSGID: number,
+    terminalID: number
+}
 export interface LoginInfo {
     GIDFull: string,
     Pass: string
 }
-
+export interface TabletEventsArgs {
+    input: TabletEventsParam[]
+}
 export interface dupcheck {
     check: number
 }

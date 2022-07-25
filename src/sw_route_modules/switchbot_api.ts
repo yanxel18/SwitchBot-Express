@@ -17,6 +17,7 @@ interface ISwitchbotApi {
      getEventMSGQ: () => Promise<Models.MessageInfo>,
      createEventLogsQ: (e: Models.EventParam, t: Models.WorkerNoketInfo,
           Token: string) => Promise<string | null>,
+     getEventMSGListQ: () => Promise<Models.EMessages[] | null>,     
      TokenValidate: (token: string | undefined) => Promise<string | JwtPayload | null>,
      TokenDecode: (token: string | undefined) => Models.WorkerNoketInfo | null,
      writeRedisClient: (qr: Models.MachineUserInfo, token: string | null) => Promise<void>,
@@ -78,6 +79,11 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
           }
      }
 
+     public async getEventMSGListQ(): Promise<Models.EMessages[] | null> {
+          const q: Models.EMessages[] = await super.getEventMSGList();
+          if (!q) throw new Error("イベントを取得できません！");
+          return q
+     }
      public async createEventLogsQ(e: Models.EventParam, t:
           Models.WorkerNoketInfo, Token: string): Promise<string | null> {
           try {

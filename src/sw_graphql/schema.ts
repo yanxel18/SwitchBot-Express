@@ -11,6 +11,9 @@ const typeDefs = gql`
         WorkerViewList: [WorkerInfo]
         AccountType: [AccountType]
         AccountInfo: [WorkerInfoUser]
+        EventMsgList: [EMessages]
+        TerminalList: [Terminal]
+        TerminalEvents (filter: TerminalMsgIDFilter): [TerminalEvents]
     }
  
     type Mutation {
@@ -24,6 +27,7 @@ const typeDefs = gql`
         createRaspi(input: RaspiCreateParam!): String 
         deleteRaspi(input: RaspiDeleteParam!): String
         createMachine(input: MachineCreateParam!): String
+        createTabletEvent(input: [TabletEventsParam!]): String
         updateMachine(input: MachineUpdateParam!): String
         deleteMachine(input: MachineDeleteParam!): String
         createAccount(input: CreateAccount!): String
@@ -109,14 +113,26 @@ const typeDefs = gql`
         acclvlID: Int
         accType: String
     }
+    type Terminal {
+        terminalID: Int,
+        terminalName: String
+    }
     
+    type TerminalEvents {
+        termID: Int,
+        termMsgID: Int,
+        termEventMsg: String
+    }
+ 
     input CreateAccount { 
         FullName: String!,
         AccLvl: Int!, 
         GIDFull: String!,
         Pass: String!
     }
-
+    input TerminalMsgIDFilter{
+        termID: Int!
+    }
     input UpdateAccount {
         ID: Int!,
         FullName: String!,
@@ -140,7 +156,10 @@ const typeDefs = gql`
     input EventParam {
         msgID: Int!
     }
-
+    input TabletEventsParam {
+        eventMSGID: Int!
+        terminalID: Int!
+    }
     input SwitchbotParam {
         switchbotName: String!
         switchbotMac: String!

@@ -9,11 +9,11 @@ interface ISwitchBotAction {
     getQRInfo: (qr: Models.machineQR) => Promise<Models.MachineUserInfo | null>,
     generateToken: (qr: Models.machineQR) => Promise<string>,
     getMachineInfo: (qr: Models.machineQR) => Promise<Models.MachineList[]>,
+    getEventMSGList: () => Promise<Models.EMessages[] | []>,
     getWorkerInfo: (uid: number) => Promise<Models.WorkerInfo[]>,
     getEventMSG: () => Promise<Models.EMessages[] | []>,
     createEventLogs: (c: Models.EventParam) => Promise<IRecordSet<any>>
 }
-
 class SwitchBotAction extends DBConnection implements ISwitchBotAction {
     constructor() {
         super();
@@ -79,6 +79,14 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
         return r ? r : [];
     }
 
+    public async getEventMSGList(): Promise<Models.EMessages[] | []> {
+        const con = await super.openConnect();
+        const query = "select eventMSGID,eventMSG from view_event_msg";
+        const r: Models.EMessages[] = await con.request().query(query).then(
+            result => { return result.recordset; }
+        );
+        return r ? r : [];
+    }
     public async createEventLogs(c: Models.EventParam): Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
