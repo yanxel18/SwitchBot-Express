@@ -16,11 +16,12 @@ interface IControlPanelAction {
         t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
     createMachine: (c: Models.Machine,
         t: Models.WorkerNoketInfo, qr: string) => Promise<Models.dupcheck[] | null>,
-    createTabletEvent: (p: Models.TabletEvents, t: Models.WorkerNoketInfo) =>
+    createTabletEvent: (eventMSGID: number, terminalID:  number, 
+        t: Models.WorkerNoketInfo) =>
         Promise<IRecordSet<any>>,
     getTerminals: () => Promise<Models.Terminal[] | []>,
     getTerminalEvents: () => Promise<Models.TerminalEvents[] | []>,
-    deleteTabletEvent: (p: Models.TabletEvents[]) => Promise<any>,
+    deleteTabletEvent: (p: Models.createTabletEvent) => Promise<any>,
     getMachineList: () => Promise<Models.Machine[]>,
     updateMachine: (p: Models.Machine,
         t: Models.WorkerNoketInfo) => Promise<IRecordSet<any>>,
@@ -138,13 +139,14 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
     }
 
 
-    public async createTabletEvent(p: Models.TabletEvents, t: Models.WorkerNoketInfo):
+    public async createTabletEvent(eventMSGID: number, terminalID:  number, 
+        t: Models.WorkerNoketInfo):
         Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()
-            .input('msgid', sql.SmallInt, p.eventMSGID)
+            .input('msgid', sql.SmallInt, eventMSGID)
             .input('uid', sql.SmallInt, t.uid)
-            .input('terminalid', sql.SmallInt, p.terminalID)
+            .input('terminalid', sql.SmallInt, terminalID)
             .execute('sp_create_tabletmsgs').then(
                 result => {
                     return result.recordset
@@ -168,9 +170,9 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
         );
         return r ? r : [];
     }
-    public async deleteTabletEvent(p: Models.TabletEvents[]): Promise<any> {
+    public async deleteTabletEvent(p: Models.createTabletEvent): Promise<any> {
         const con = await super.openConnect();
-        const query = `delete from sb_event_tablets where ste_terminal_id=${p[0].terminalID}`;
+        const query = `delete from sb_event_tablets where ste_terminal_id=${p.terminalID}`;
         return await con.request().query(query).then(
             result => { return result.recordset; }
         ) || null;

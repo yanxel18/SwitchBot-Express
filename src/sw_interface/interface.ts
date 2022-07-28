@@ -86,10 +86,14 @@ export interface WorkerInfo{
     GIDFull?: string
 }
 
-export interface TabletEvents {
-    eventMSGID: number,
-    terminalID: number
-}
+export interface createTabletEvent {
+    terminalID: number,
+    eventMSG: number[]
+  }
+  
+  export interface eventMsgs {
+    eventMSGID: number
+  }
 export interface WorkerInfoRegister extends WorkerInfo{
     Pass: string
 }
@@ -185,15 +189,15 @@ export interface CreateMachineParam {
     machineQR?: string
 }
 export interface TabletEventsParam {
-    eventMSGID: number,
-    terminalID: number
+    terminalID: number,
+    eventMSG: number[] |[]
 }
 export interface LoginInfo {
     GIDFull: string,
     Pass: string
 }
 export interface TabletEventsArgs {
-    input: TabletEventsParam[]
+    input: TabletEventsParam
 }
 export interface dupcheck {
     check: number

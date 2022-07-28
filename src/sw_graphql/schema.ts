@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 const typeDefs = gql`
     type Query{
         SwitchBot (filter: SwitchbotFilter): [SwitchBot]
@@ -27,7 +27,7 @@ const typeDefs = gql`
         createRaspi(input: RaspiCreateParam!): String 
         deleteRaspi(input: RaspiDeleteParam!): String
         createMachine(input: MachineCreateParam!): String
-        createTabletEvent(input: [TabletEventsParam!]): String
+        createTabletEvent(input: TabletEventsParam!): String
         updateMachine(input: MachineUpdateParam!): String
         deleteMachine(input: MachineDeleteParam!): String
         createAccount(input: CreateAccount!): String
@@ -104,7 +104,9 @@ const typeDefs = gql`
         eventMSGID: Int
         eventMSG: String
     }
-    
+    type eventMsgs {
+        eventMSGID: Int
+    }
     type AccessInfo {
         UserInfo: WorkerInfoUser
         Noket: String 
@@ -157,9 +159,10 @@ const typeDefs = gql`
         msgID: Int!
     }
     input TabletEventsParam {
-        eventMSGID: Int!
         terminalID: Int!
+        eventMSG: [Int!]
     }
+     
     input SwitchbotParam {
         switchbotName: String!
         switchbotMac: String!
@@ -205,4 +208,4 @@ const typeDefs = gql`
     }
 `;
 
-export default typeDefs
+export default typeDefs;
