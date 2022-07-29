@@ -13,7 +13,9 @@ const typeDefs = gql`
         AccountInfo: [WorkerInfoUser]
         EventMsgList: [EMessages]
         TerminalList: [Terminal]
+        TerminalListView: [Terminal]
         TerminalEvents (filter: TerminalMsgIDFilter): [TerminalEvents]
+        TerminalListEvents (filter: TerminalMsgIDFilter): [TerminalEvents]
     }
  
     type Mutation {

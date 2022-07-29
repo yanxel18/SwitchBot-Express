@@ -81,6 +81,20 @@ const resolvers = {
             return await UserAPI.UserTokenValidate(Token) && t && Token ?
                 ControlPanelAPI.getTerminalsQ() : [];
         },
+        TerminalListView: async (_: any, ___: any, { SwitchbotAPI, ControlPanelAPI, Token }:
+            Context): Promise<Models.Terminal[]> => {
+                const t = SwitchbotAPI.TokenDecode(Token);
+                return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+                ControlPanelAPI.getTerminalsQ() : [];
+        },
+        TerminalListEvents: async (_: any, { filter }: Models.TerminalMsgIDFilter,
+            { SwitchbotAPI, ControlPanelAPI, Token }:
+           Context): Promise<Models.TerminalEvents[]> => {
+           const t = SwitchbotAPI.TokenDecode(Token);
+           return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+                (await ControlPanelAPI.getTerminalEventsQ())
+                .filter(x => x.termID === filter.termID) : [];
+       },
         TerminalEvents: async (_: any, { filter }: Models.TerminalMsgIDFilter,
              { UserAPI, ControlPanelAPI, Token }:
             Context): Promise<Models.TerminalEvents[]> => {
