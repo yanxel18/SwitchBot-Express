@@ -86,6 +86,11 @@ export interface WorkerInfo{
     GIDFull?: string
 }
 
+export interface WorkerSelect{ 
+    FullName?: string,
+    UserQR?: string, 
+}
+
 export interface createTabletEvent {
     terminalID: number,
     eventMSG: number[]

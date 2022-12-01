@@ -19,6 +19,14 @@ const resolvers = {
                 (await SwitchbotAPI.getMachineListForTriggerQ())
                     .find(x => x.machineID === args.id) : []
         },
+        MachineSelect: async (_: any, __: any, { ControlPanelAPI }: Context):
+            Promise<Models.Machine[] | []> => {
+            return await ControlPanelAPI.getMachineListQ();
+        },
+        WorkerSelect: async (_: any, ___: any, { ControlPanelAPI }:
+            Context): Promise<Models.WorkerSelect[]> => {
+            return await  ControlPanelAPI.getWorkerListQ();
+        },
         RaspiList: async (_: any, ___: any, { SwitchbotAPI, UserAPI, Token }:
             Context): Promise<Models.Raspi[]> => {
             const t = UserAPI.UserTokenDecode(Token);
@@ -83,9 +91,7 @@ const resolvers = {
         },
         TerminalListView: async (_: any, ___: any, { SwitchbotAPI, ControlPanelAPI, Token }:
             Context): Promise<Models.Terminal[]> => {
-                const t = SwitchbotAPI.TokenDecode(Token);
-                return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
-                ControlPanelAPI.getTerminalsQ() : [];
+                return await ControlPanelAPI.getTerminalsQ();
         },
         TerminalListEvents: async (_: any, { filter }: Models.TerminalMsgIDFilter,
             { SwitchbotAPI, ControlPanelAPI, Token }:

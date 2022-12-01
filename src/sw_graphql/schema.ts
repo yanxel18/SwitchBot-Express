@@ -5,6 +5,8 @@ const typeDefs = gql`
         MachineList: [MachineList]
         MachineViewList: [MachineList]
         Machine (id: Int!): Machine
+        MachineSelect: [MachineList]
+        WorkerSelect: [WorkerSelect]
         EventMsg: MessageInfo
         RaspiList: [RaspiList]
         WorkerList: [WorkerInfo]
@@ -59,6 +61,10 @@ const typeDefs = gql`
         machineModel: String!
         machineSwitchbotID: Int
         machineQR: String!
+    }
+    type WorkerSelect {
+        FullName: String!
+        UserQR: String!
     }
     type SwitchBot {
         switchbotID: Int!
