@@ -134,6 +134,8 @@ export interface TerminalEvents {
     termID: number,
     termMsgID: number,
     termEventMsg: string,
+    termAction: number
+
 }
  
 export interface EventParam {  
@@ -162,7 +164,8 @@ export interface SwitchbotFilter{
 }
 export interface TerminalMsgIDFilter{
     filter: {
-        termID: number
+        termID: number,
+        termAction?: number
     }
 }
 export interface SwitchbotDeleteParam{

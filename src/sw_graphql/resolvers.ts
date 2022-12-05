@@ -12,7 +12,7 @@ const resolvers = {
             return await UserAPI.UserTokenValidate(Token) ?
                 await ControlPanelAPI.getMachineListQ() : []
         },
-        Machine: async (parent: any, args: Models.MachineArg,
+        Machine: async (_ : any, args: Models.MachineArg,
             { SwitchbotAPI, Token, UserAPI }: Context):
             Promise<Models.MachineList | undefined | []> => {
             return await UserAPI.UserTokenValidate(Token) ?
@@ -91,23 +91,30 @@ const resolvers = {
         },
         TerminalListView: async (_: any, ___: any, { SwitchbotAPI, ControlPanelAPI, Token }:
             Context): Promise<Models.Terminal[]> => {
-                return await ControlPanelAPI.getTerminalsQ();
+                const t = SwitchbotAPI.TokenDecode(Token);
+                return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+                ControlPanelAPI.getTerminalsQ() : [];
         },
         TerminalListEvents: async (_: any, { filter }: Models.TerminalMsgIDFilter,
             { SwitchbotAPI, ControlPanelAPI, Token }:
            Context): Promise<Models.TerminalEvents[]> => {
            const t = SwitchbotAPI.TokenDecode(Token);
-           return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
-                (await ControlPanelAPI.getTerminalEventsQ())
-                .filter(x => x.termID === filter.termID) : [];
+          
+           const returnVal = await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+               (await ControlPanelAPI.getTerminalEventsQ()) : []; 
+        return filter.termAction 
+        ? returnVal.filter(x => x.termID === filter.termID && x.termAction === filter.termAction)
+        :   returnVal.filter(x => x.termID === filter.termID);
        },
         TerminalEvents: async (_: any, { filter }: Models.TerminalMsgIDFilter,
              { UserAPI, ControlPanelAPI, Token }:
             Context): Promise<Models.TerminalEvents[]> => {
-            const t = UserAPI.UserTokenDecode(Token);
-            return await UserAPI.UserTokenValidate(Token) && t && Token ?
-                 (await ControlPanelAPI.getTerminalEventsQ())
-                 .filter(x => x.termID === filter.termID) : [];
+            const t = UserAPI.UserTokenDecode(Token); 
+        const returnVal =  await UserAPI.UserTokenValidate(Token) && t && Token ?
+       (await ControlPanelAPI.getTerminalEventsQ()) : []; 
+        return filter.termAction 
+        ? returnVal.filter(x => x.termID === filter.termID && x.termAction === filter.termAction)
+        :   returnVal.filter(x => x.termID === filter.termID);
         }
     },
     Mutation: {

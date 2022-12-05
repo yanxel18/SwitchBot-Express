@@ -164,7 +164,7 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
     }
     public async getTerminalEvents(): Promise<Models.TerminalEvents[] | []> {
         const con = await super.openConnect();
-        const query = "select termID,termMsgID,termEventMsg from view_terminal_msgs";
+        const query = "select termID,termMsgID,termEventMsg,termAction from view_terminal_msgs";
         const r: Models.TerminalEvents[] = await con.request().query(query).then(
             result => { return result.recordset; }
         );

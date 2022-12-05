@@ -132,6 +132,7 @@ const typeDefs = gql`
         termID: Int,
         termMsgID: Int,
         termEventMsg: String
+        termAction: Int
     }
  
     input CreateAccount { 
@@ -141,7 +142,8 @@ const typeDefs = gql`
         Pass: String!
     }
     input TerminalMsgIDFilter{
-        termID: Int!
+        termID: Int!,
+        termAction: Int
     }
     input UpdateAccount {
         ID: Int!,
