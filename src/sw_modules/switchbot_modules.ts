@@ -94,6 +94,7 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
             .input('msgid', sql.SmallInt, c.msgID)
             .input('sbid', sql.SmallInt, c.sbid)
             .input('userid', sql.SmallInt, c.userid)
+            .input('logtypeid',sql.SmallInt, c.logtypeid)
             .execute('sp_create_eventlog').then(
                 result => {
                     return result.recordset

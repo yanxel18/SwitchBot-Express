@@ -95,7 +95,8 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
                     ...e,
                     userid: t.uid,
                     mID: t.mID,
-                    sbid: t.sID
+                    sbid: t.sID,
+                    logtypeid: 1
                }
                if (m && m.raspiServer) {
                     const switchbotResponse = await axios.post(m.raspiServer, {
@@ -125,7 +126,8 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
                     ...e,
                     userid: t.uid,
                     mID: t.mID,
-                    sbid: t.sID
+                    sbid: t.sID,
+                    logtypeid: 2
                } 
                  await super.createEventLogs(p); 
                  return "success";

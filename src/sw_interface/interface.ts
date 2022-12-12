@@ -142,7 +142,8 @@ export interface EventParam {
     msgID: number,
     mID?: number,
     sbid?: number,
-    userid?: number 
+    userid?: number, 
+    logtypeid: number
 }
 export interface Machine {
     machineID?: number,
