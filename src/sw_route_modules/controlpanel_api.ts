@@ -170,9 +170,9 @@ class ControlPanelApi extends ControlPanelAction implements IControlPanelApi {
     }
   }
 
-  public async getTerminalEventsQ(): Promise<Models.TerminalEvents[]> {
+  public async getTerminalEventsQ(lang: string): Promise<Models.TerminalEvents[]> {
     try {
-      return await super.getTerminalEvents();
+      return await super.getTerminalEvents(lang);
     } catch (error: any) {
       throw new Error("Cannot load Terminal Events list! " + error);
     }

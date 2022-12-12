@@ -100,21 +100,24 @@ const resolvers = {
            Context): Promise<Models.TerminalEvents[]> => {
            const t = SwitchbotAPI.TokenDecode(Token);
           
-           const returnVal = await SwitchbotAPI.TokenValidate(Token) && t && Token ?
-               (await ControlPanelAPI.getTerminalEventsQ()) : []; 
-        return filter.termAction 
-        ? returnVal.filter(x => x.termID === filter.termID && x.termAction === filter.termAction)
-        :   returnVal.filter(x => x.termID === filter.termID);
+           const eventListValue = await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+               (await ControlPanelAPI.getTerminalEventsQ(filter.lang)) : []; 
+               return filter.termAction 
+                ? eventListValue.filter(x => x.termID === filter.termID
+                    && x.termAction === filter.termAction)
+                : eventListValue.filter(x => x.termID === filter.termID
+                    && x.termAction === filter.termAction);  
        },
         TerminalEvents: async (_: any, { filter }: Models.TerminalMsgIDFilter,
              { UserAPI, ControlPanelAPI, Token }:
             Context): Promise<Models.TerminalEvents[]> => {
             const t = UserAPI.UserTokenDecode(Token); 
-        const returnVal =  await UserAPI.UserTokenValidate(Token) && t && Token ?
-       (await ControlPanelAPI.getTerminalEventsQ()) : []; 
-        return filter.termAction 
-        ? returnVal.filter(x => x.termID === filter.termID && x.termAction === filter.termAction)
-        :   returnVal.filter(x => x.termID === filter.termID);
+            const eventListValue =  await UserAPI.UserTokenValidate(Token) && t && Token ?
+            (await ControlPanelAPI.getTerminalEventsQ(filter.lang)) : []; 
+            return filter.termAction 
+            ? eventListValue.filter(x => x.termID === filter.termID
+                && x.termAction !== 1)
+            : eventListValue.filter(x => x.termID === filter.termID);  
         }
     },
     Mutation: {
@@ -123,6 +126,12 @@ const resolvers = {
             const t = SwitchbotAPI.TokenDecode(Token);
             return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
                 await SwitchbotAPI.createEventLogsQ(args.input, t, Token) : null;
+        },
+        createEventLogsHold: async (_: any, args: Models.ArgsInput,
+            { SwitchbotAPI, Token }: Context): Promise<string | null> => {
+            const t = SwitchbotAPI.TokenDecode(Token);
+            return await SwitchbotAPI.TokenValidate(Token) && t && Token ?
+                await SwitchbotAPI.createEventLogsQHold(args.input, t) : null;
         },
         WorkerToken: async (_: any, args: Models.machineQR, { SwitchbotAPI }: Context)
             : Promise<string | null | Models.WorkerToken> => {

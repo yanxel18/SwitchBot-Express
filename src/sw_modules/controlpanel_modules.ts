@@ -20,7 +20,7 @@ interface IControlPanelAction {
         t: Models.WorkerNoketInfo) =>
         Promise<IRecordSet<any>>,
     getTerminals: () => Promise<Models.Terminal[] | []>,
-    getTerminalEvents: () => Promise<Models.TerminalEvents[] | []>,
+    getTerminalEvents: (lang: string) => Promise<Models.TerminalEvents[] | []>,
     deleteTabletEvent: (p: Models.createTabletEvent) => Promise<any>,
     getMachineList: () => Promise<Models.Machine[]>,
     updateMachine: (p: Models.Machine,
@@ -162,9 +162,11 @@ class ControlPanelAction extends DBConnection implements IControlPanelAction {
         );
         return r ? r : [];
     }
-    public async getTerminalEvents(): Promise<Models.TerminalEvents[] | []> {
+    public async getTerminalEvents(lang: string): Promise<Models.TerminalEvents[] | []> {
         const con = await super.openConnect();
-        const query = "select termID,termMsgID,termEventMsg,termAction from view_terminal_msgs";
+        const language = lang == "en" ? "_en" : "";
+        const query = `select termID,termMsgID,termEventMsg,
+                       termAction from view_terminal_msgs${language}`;
         const r: Models.TerminalEvents[] = await con.request().query(query).then(
             result => { return result.recordset; }
         );

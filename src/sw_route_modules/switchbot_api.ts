@@ -17,6 +17,8 @@ interface ISwitchbotApi {
      getEventMSGQ: () => Promise<Models.MessageInfo>,
      createEventLogsQ: (e: Models.EventParam, t: Models.WorkerNoketInfo,
           Token: string) => Promise<string | null>,
+     createEventLogsQHold: (e: Models.EventParam, t:
+               Models.WorkerNoketInfo) => Promise<string | null>,
      getEventMSGListQ: () => Promise<Models.EMessages[] | null>,     
      TokenValidate: (token: string | undefined) => Promise<string | JwtPayload | null>,
      TokenDecode: (token: string | undefined) => Models.WorkerNoketInfo | null,
@@ -111,6 +113,23 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
                     }
 
                } return null;
+          } catch (error: any) {
+               throw new Error("Cannot trigger switchbot! Check RaspiAPI server! " + error);
+          }
+
+     }
+     public async createEventLogsQHold(e: Models.EventParam, t:
+          Models.WorkerNoketInfo): Promise<string | null> {
+          try { 
+               const p: Models.EventParam = {
+                    ...e,
+                    userid: t.uid,
+                    mID: t.mID,
+                    sbid: t.sID
+               } 
+                 await super.createEventLogs(p); 
+                 return "success";
+            
           } catch (error: any) {
                throw new Error("Cannot trigger switchbot! Check RaspiAPI server! " + error);
           }

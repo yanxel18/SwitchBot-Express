@@ -22,6 +22,7 @@ const typeDefs = gql`
  
     type Mutation {
         createEventLogs(input: EventParam!): String 
+        createEventLogsHold(input: EventParam!): String 
         WorkerToken(machineQRScan: String!, 
             userQRScan: String!): WorkerToken
         createSwitchBot(input: SwitchbotParam!): String
@@ -143,7 +144,8 @@ const typeDefs = gql`
     }
     input TerminalMsgIDFilter{
         termID: Int!,
-        termAction: Int
+        termAction: Int,
+        lang: String!
     }
     input UpdateAccount {
         ID: Int!,
