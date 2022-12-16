@@ -83,7 +83,6 @@
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
     "mssql": "^7.3.0",
-    "redis": "^4.0.2",
     "rxjs": "^7.4.0",
     "uuid": "^8.3.2"
   },
@@ -105,6 +104,7 @@
     "fs-extra": "^10.0.0",
     "jasmine": "^3.10.0",
     "nodemon": "^2.0.15",
+    "redis": "^4.5.1",
     "supertest": "^6.1.6",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.12.0",

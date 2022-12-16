@@ -16,7 +16,12 @@ class RedisClient implements IRedisClient {
         this.callback();
     }
     public initializeClient(): RedisClientType<any, any> {
-        return redis.createClient()
+        return redis.createClient({
+            socket:{
+                host: '127.0.0.1',
+                port: 6379
+            }
+        })
     }
     public async executeRedis(): Promise<void> {
         await this.client.connect();
