@@ -79,11 +79,18 @@ class SwitchbotApi extends SwitchBotAction implements ISwitchbotApi {
                messages: q,
                error: []
           }
-     }
+     } 
 
      public async getEventMSGListQ(): Promise<Models.EMessages[] | null> {
           const q: Models.EMessages[] = await super.getEventMSGList();
           if (!q) throw new Error("イベントを取得できません！");
+          return q
+     }
+
+     public async getMachineLastEventQ(mID: number): 
+          Promise<Models.LastEventParam[] | null> {
+          const q: Models.LastEventParam[] = await super.getMachineLastEvent(mID);
+          if (!q) throw new Error("最後のイベントを取得できません！");
           return q
      }
      public async createEventLogsQ(e: Models.EventParam, t:

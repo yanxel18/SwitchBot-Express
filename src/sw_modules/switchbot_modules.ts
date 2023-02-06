@@ -10,6 +10,7 @@ interface ISwitchBotAction {
     generateToken: (qr: Models.machineQR) => Promise<string>,
     getMachineInfo: (qr: Models.machineQR) => Promise<Models.MachineList[]>,
     getEventMSGList: () => Promise<Models.EMessages[] | []>,
+    getMachineLastEvent: (mID: number) => Promise<Models.LastEventParam[]|[]>,
     getWorkerInfo: (uid: number) => Promise<Models.WorkerInfo[]>,
     getEventMSG: () => Promise<Models.EMessages[] | []>,
     createEventLogs: (c: Models.EventParam) => Promise<IRecordSet<any>>
@@ -87,6 +88,17 @@ class SwitchBotAction extends DBConnection implements ISwitchBotAction {
         );
         return r ? r : [];
     }
+
+    public async getMachineLastEvent(mID: number): Promise<Models.LastEventParam[]|[]> {
+        const con = await super.openConnect();
+        const query = `select  top 1 LogDate,EventType,MachineID,termEventMsg,termMsgID
+        ,termID,termAction from view_last_event where MachineID=@mID order by LogDate desc`;
+        return await con.request().input('mID',sql.Int, mID).query(query).then(
+            result => { return result.recordset; }
+        ) || []
+ 
+    }
+
     public async createEventLogs(c: Models.EventParam): Promise<IRecordSet<any>> {
         const con = await super.openConnect();
         return await con.request()

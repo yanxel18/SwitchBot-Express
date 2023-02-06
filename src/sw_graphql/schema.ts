@@ -8,6 +8,7 @@ const typeDefs = gql`
         MachineSelect: [MachineList]
         WorkerSelect: [WorkerSelect]
         EventMsg: MessageInfo
+        LastEvent: [LastEvent]
         RaspiList: [RaspiList]
         WorkerList: [WorkerInfo]
         WorkerViewList: [WorkerInfo]
@@ -136,6 +137,15 @@ const typeDefs = gql`
         termAction: Int
     }
  
+    type LastEvent {
+        LogDate: String,
+        EventType: String,
+        MachineID: Int,
+        termID: Int,
+        termMsgID: Int,
+        termEventMsg: String,
+        termAction: Int
+    } 
     input CreateAccount { 
         FullName: String!,
         AccLvl: Int!, 

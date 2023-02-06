@@ -249,3 +249,13 @@ export interface UpdatePassArgs {
 export interface LogInfoArgs {
     input: LoginInfo
 }
+
+export interface LastEventParam extends TerminalEvents{
+    LogDate?: string,
+    EventType?: string,
+    MachineID?: number
+}
+
+export interface LastEventArgs { 
+        mID: number 
+}

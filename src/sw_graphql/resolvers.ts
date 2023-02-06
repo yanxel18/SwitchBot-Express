@@ -50,6 +50,13 @@ const resolvers = {
             return await SwitchbotAPI.TokenValidate(Token) ?
                 await SwitchbotAPI.getEventMSGQ() : null;
         },
+        LastEvent:async (_: any, __: any,
+                 {UserAPI, SwitchbotAPI, Token }: Context):
+        Promise<Models.LastEventParam[] | null> => { 
+            const t = SwitchbotAPI.TokenDecode(Token);
+        return t ?
+            await SwitchbotAPI.getMachineLastEventQ(t.mID) : null;
+        },
         WorkerList: async (_: any, ___: any, { SwitchbotAPI, ControlPanelAPI, Token }:
             Context): Promise<Models.WorkerInfo[]> => {
             const t = SwitchbotAPI.TokenDecode(Token);
